@@ -1,7 +1,9 @@
 package edu.uba.filters.Tools;
 
-/**
- * Created by jamaaltaylor on 10/23/15.
- */
+/*
+* For the uninitiated:
+* http://en.wikipedia.org/wiki/Factory_method_pattern
+* */
 public enum IOType {
+    BUFFERED_WRITTER,BUFFERED_READER
 }
