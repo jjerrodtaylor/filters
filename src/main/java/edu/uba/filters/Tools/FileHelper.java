@@ -1,10 +1,8 @@
 package edu.uba.filters.Tools;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.LinkedListMultimap;
 import org.apache.commons.math3.stat.Frequency;
@@ -157,17 +155,51 @@ public class FileHelper {
         return transformed;
     }
 
-    public LinkedListMultimap<String,String> transformData(ListMultimap<String,String> data, int buckets){
+    public double[] transformToDouble(List<String> data){
+        double[] newData = new double[data.size()];
+        double insert;
+
+        for(int i=0;i<data.size();i++){
+            insert = Double.parseDouble(data.get(i));
+            newData[i] = insert;
+        }
+        return newData;
+    }
+
+    public int[] transformToInteger(List<String> data){
+        int[] newData = new int[data.size()];
+        int insert;
+
+        for(int i=0;i<data.size();i++){
+            insert = Integer.parseInt(data.get(i));
+            newData[i] = insert;
+        }
+        return newData;
+    }
+
+    public LinkedListMultimap<String,String> discretize(ListMultimap<String,String> data, int buckets){
+        int useInt;
+        int intMin;
+        int intMax;
+        double useDoub;
+        double doubMin;
+        double doubMax;
+        double[] doubList;
+        int[] intList;
 
         Iterator<String> keySetIterator =  data.keys().iterator();
         String test;
         Frequency frequency = new Frequency();
-        int useInt;
-        double useDoub;
+
+
 
         while(keySetIterator.hasNext()){
             test = data.get(keySetIterator.next()).get(0);
             if(isDouble(test) == true){
+                doubList = transformToDouble(data.get(keySetIterator.next()));
+                doubMax = StatUtils.max(doubList);
+                doubMin = StatUtils.min(doubList);
+
                 for(String s: data.get(keySetIterator.next())){
                     frequency.addValue(Double.parseDouble(s));
                 }
