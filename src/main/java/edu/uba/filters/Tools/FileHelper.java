@@ -159,33 +159,45 @@ public class FileHelper {
         double[] newData = new double[data.size()];
         double insert;
 
-        for(int i=0;i<data.size();i++){
-            insert = Double.parseDouble(data.get(i));
-            newData[i] = insert;
+        if(isDouble(data.get(0)) == true){
+            for(int i=0;i<data.size();i++){
+                insert = Double.parseDouble(data.get(i));
+                newData[i] = insert;
+            }
+        }else{
+            for(int i=0;i<data.size();i++){
+                insert = Integer.parseInt(data.get(i));
+                newData[i] = (double) insert;
+            }
         }
+
         return newData;
     }
 
-    public int[] transformToInteger(List<String> data){
-        int[] newData = new int[data.size()];
-        int insert;
+    public String[] linearTransform(double[] data, int firstGroup, int lastGroup){
+        double doubMin = StatUtils.min(data);
+        double doubMax = StatUtils.max(data);
+        double transformedNumber;
+        int truncated;
+        String[] transformations = new String[data.length];
 
-        for(int i=0;i<data.size();i++){
-            insert = Integer.parseInt(data.get(i));
-            newData[i] = insert;
+        for(int i = 0;i<data.length;i++){
+            transformedNumber = ((data[i] - (double) firstGroup)/(doubMax - doubMin) *
+                                ((double)lastGroup - (double)firstGroup)) +
+                                firstGroup;
+            truncated = (int) transformedNumber;
+            transformations[i] = Integer.toString(truncated);
         }
-        return newData;
+
+        return transformations;
     }
 
-    public LinkedListMultimap<String,String> discretize(ListMultimap<String,String> data, int buckets){
-        int useInt;
-        int intMin;
-        int intMax;
+
+    public LinkedListMultimap<String,String> discretize(ListMultimap<String,String> data, int firstGroup, int lastGroup){
         double useDoub;
-        double doubMin;
-        double doubMax;
         double[] doubList;
-        int[] intList;
+        String[] transformations;
+        List<String> workingList;
 
         Iterator<String> keySetIterator =  data.keys().iterator();
         String test;
@@ -195,14 +207,15 @@ public class FileHelper {
 
         while(keySetIterator.hasNext()){
             test = data.get(keySetIterator.next()).get(0);
-            if(isDouble(test) == true){
+            if(isDouble(test) == true || isInteger(test) == true){
+                workingList = data.get(keySetIterator.next());
                 doubList = transformToDouble(data.get(keySetIterator.next()));
-                doubMax = StatUtils.max(doubList);
-                doubMin = StatUtils.min(doubList);
+                transformations = linearTransform(doubList,firstGroup,lastGroup);
 
-                for(String s: data.get(keySetIterator.next())){
-                    frequency.addValue(Double.parseDouble(s));
+                for(int i = 0;i<workingList.size();i++){
+                    workingList.set(i,transformations[i]);
                 }
+                data.
 
             }
 
