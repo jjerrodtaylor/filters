@@ -3,20 +3,24 @@ package edu.uba.filters.Tools;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
-import org.apache.commons.csv.CSVParser;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVRecord;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.input.BOMInputStream;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.LinkedListMultimap;
+import org.apache.commons.math3.stat.Frequency;
+import org.apache.commons.math3.stat.StatUtils;
 
-/**
- * Created by jamaaltaylor on 10/23/15.
- */
+
+
 public class FileHelper {
 
     private IOBufferedWriter  bw = null;
     private IOBufferedReader br = null;
+
+
+    public FileHelper(){
+        super();
+    }
 
     public File turnToFile(String filePath)
     {
@@ -115,24 +119,64 @@ public class FileHelper {
         return fileContents;
     }
 
-    public HashMap<String, ArrayList<String>> parseCSVData(ArrayList<String> data){
+    public boolean isDouble(String check){
 
+        try{
+            Double.parseDouble(check);
+            return true;
+        }catch (NumberFormatException e){
+            return false;
+        }
+    }
+
+    public boolean isInteger(String check){
+
+        try{
+            Integer.parseInt(check);
+            return true;
+        }catch(NumberFormatException e){
+            return false;
+        }
+
+    }
+
+    public LinkedListMultimap<String,String> parseCSVData(ArrayList<String> data){
+
+        LinkedListMultimap<String,String> transformed = LinkedListMultimap.create();
         HashMap<String, ArrayList<String>> transformedData = new HashMap<String, ArrayList<String>>();
         String[] headers = data.get(0).split(",");
         String[] temp;
-        for(int i = 0;i<headers.length;i++){
-            ArrayList<String> splitData = new ArrayList<String>();
-            transformedData.put(headers[i],splitData);
-        }
 
         for(int i = 1;i<data.size()-1;i++){
             for(int j = 0;j<headers.length;j++){
                 temp = data.get(i).split(",");
-                transformedData.get(headers[j]).add(temp[j]);
+                transformed.put(headers[j],temp[j]);
             }
         }
 
-        return transformedData;
+        return transformed;
+    }
+
+    public LinkedListMultimap<String,String> transformData(ListMultimap<String,String> data, int buckets){
+
+        Iterator<String> keySetIterator =  data.keys().iterator();
+        String test;
+        Frequency frequency = new Frequency();
+        int useInt;
+        double useDoub;
+
+        while(keySetIterator.hasNext()){
+            test = data.get(keySetIterator.next()).get(0);
+            if(isDouble(test) == true){
+                for(String s: data.get(keySetIterator.next())){
+                    frequency.addValue(Double.parseDouble(s));
+                }
+
+            }
+
+
+        }
+
     }
 
 }
