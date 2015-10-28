@@ -1,16 +1,11 @@
 package edu.uba.filters;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import org.apache.commons.math3.stat.Frequency;
+import java.util.*;
+
+import edu.uba.filters.Frequency;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-import java.util.Map;
-/**
- * Created by jamaaltaylor on 10/23/15.
- */
+
 public class Entropy {
 
     Entropy(){
@@ -24,20 +19,20 @@ public class Entropy {
 
     public double entropy(List<String> data){
 
-        double entropy = 0;
-        double prob;
-        Iterator<String> iterator;
-        Frequency frequency = new Frequency();
+        double entropy = 0.0;
+        double prob = 0.0;
+        Frequency<String> frequency = new Frequency<String>();
 
         for(String s:data){
             frequency.addValue(s);
         }
 
+        String[] keys = frequency.getKeys();
 
-        while(frequency.entrySetIterator().hasNext()){
-            String test = frequency.entrySetIterator().next().toString();
-            prob = frequency.getPct(frequency.entrySetIterator().next().getKey());
-            entropy = entropy - (prob) * log(prob,2);
+        for(int i=0;i<keys.length;i++){
+
+            prob = frequency.getPct(keys[i]);
+            entropy = entropy - prob * log(prob,2);
         }
 
         return entropy;
@@ -47,18 +42,32 @@ public class Entropy {
 
         int total;
         int counter = 0;
-        Frequency frequency = new Frequency();
-        Table<String,String,Integer> conditionalData = HashBasedTable.create();
+        double probXY = 0.0;
+        double probY = 0.0;
+        double entropy = 0.0;
+        Frequency<String> interestedFrequency = new Frequency<String>();
+        Frequency<String> reducingFrequency = new Frequency<String>();
+
+        List<Integer> conditionalData = new LinkedList<Integer>();
 
         for(int i=0;i<reducingSet.size();i++){
-            frequency.addValue(reducingSet.get(i));
-            conditionalData.put(interestedSet.get(i),reducingSet.get(i),i);
+            interestedFrequency.addValue(reducingSet.get(i));
+            reducingFrequency.addValue(interestedSet.get(i));
+            if(reducingSet.get(i).equalsIgnoreCase(reducingClass)){
+                if(interestedSet.get(i).equalsIgnoreCase(interestedClass)){
+                    conditionalData.add(i);
+                }
+            }
         }
 
-        Integer num = conditionalData.row(interestedClass).size();
-        Integer den = conditionalData.column(reducingClass).size();
+        String[] keys = reducingFrequency.getKeys();
+        for(int i =0;i<reducingFrequency.getKeys().length;i++){
+            probXY = (double) conditionalData.size()/reducingSet.size();
+            probY = (double) interestedFrequency.getPct(keys[i]);
+            entropy = entropy - probXY*log(probY,2);
+        }
 
-        return (double) num/den;
+        return entropy;
     }
 
     public double informationGain(List<String> interestedSet, List<String> reducingSet, String interestedClass, String reducingClass){

@@ -48,12 +48,14 @@ public class EntropyTest{
         * 0    0
         * 0    1
         * 1    1
+        * p(survived|male) = 2/15
+        * p(male) = 8/15
         * */
         List<String> survived = Arrays.asList("1","0","1","1","0","1","0","0","0","1","0","1","0","0","1");
         List<String> sex = Arrays.asList("0","1","0","1","1","0","0","1","1","0","1","0","0","1","1");
         Entropy entropy = new Entropy();
-        Double result = entropy.conditionalEntropy(survived,sex,"survived","sex");
-        assertEquals(.206,result,.006);
+        Double result = entropy.conditionalEntropy(survived,sex,"1","1");
+        assertEquals(.507,result,.006);
     }
 
 
