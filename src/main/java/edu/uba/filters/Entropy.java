@@ -13,17 +13,10 @@ import java.util.Map;
  */
 public class Entropy {
 
-    private Frequency frequency = new Frequency();
-
     Entropy(){
         super();
     }
 
-    Entropy(List<String> data){
-        for(String s:data){
-            frequency.addValue(s);
-        }
-    }
 
     private double log(double num, int base){
        return Math.log(num)/Math.log(base);
@@ -33,9 +26,17 @@ public class Entropy {
 
         double entropy = 0;
         double prob;
-        //for each unique element
-        for(int i = 0; i<frequency.getUniqueCount();i++){
-            prob = frequency.getPct(frequency.valuesIterator().next());
+        Iterator<String> iterator;
+        Frequency frequency = new Frequency();
+
+        for(String s:data){
+            frequency.addValue(s);
+        }
+
+
+        while(frequency.entrySetIterator().hasNext()){
+            String test = frequency.entrySetIterator().next().toString();
+            prob = frequency.getPct(frequency.entrySetIterator().next().getKey());
             entropy = entropy - (prob) * log(prob,2);
         }
 
@@ -46,8 +47,8 @@ public class Entropy {
 
         int total;
         int counter = 0;
+        Frequency frequency = new Frequency();
         Table<String,String,Integer> conditionalData = HashBasedTable.create();
-        frequency.clear();
 
         for(int i=0;i<reducingSet.size();i++){
             frequency.addValue(reducingSet.get(i));

@@ -2,10 +2,9 @@ package edu.uba.filters;
 
 import com.google.common.collect.LinkedListMultimap;
 import edu.uba.filters.Tools.*;
-import org.apache.spark.sql.Column;
-
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Hello world!
@@ -17,7 +16,7 @@ public class App
     {
         FileHelper fileHelper = new FileHelper();
         Entropy entropy = new Entropy();
-        ArrayList<String> data = null;
+        List<String> data = null;
         LinkedListMultimap<String,String> transformedData = LinkedListMultimap.create();
         double testEntropy;
         data = fileHelper.readFileToMemory("/Users/jamaaltaylor/Documents/datos/titanic/train.csv");

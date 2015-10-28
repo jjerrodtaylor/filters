@@ -2,7 +2,7 @@ package edu.uba.filters.Tools;
 
 import java.io.*;
 import java.util.*;
-
+import org.apache.commons.io.FileUtils;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.LinkedListMultimap;
 import org.apache.commons.math3.stat.Frequency;
@@ -85,33 +85,15 @@ public class FileHelper {
         }
     }
 
-    public ArrayList<String> readFileToMemory(String filepath)
+    public List<String> readFileToMemory(String filepath)
     {
-        this.br = IOFactory.buildIOBufferedReader(filepath);
-        String currentLine = null;
-        ArrayList<String> fileContents = new ArrayList<String>();
+        List<String> fileContents = new ArrayList<String>();
+        File file = new File(filepath);
 
-        try
-        {
-            while((currentLine = this.br.getBufferedReader().readLine()) != null)
-            {
-                fileContents.add(currentLine);
-            }
-        }
-        catch(IOException e)
-        {
+        try{
+            fileContents = FileUtils.readLines(file,"UTF-8");
+        }catch (IOException e){
             e.printStackTrace();
-        }
-        finally
-        {
-            try
-            {
-                this.br.getBufferedReader().close();
-            }
-            catch(IOException e)
-            {
-                e.printStackTrace();
-            }
         }
 
         return fileContents;
@@ -138,7 +120,7 @@ public class FileHelper {
 
     }
 
-    public LinkedListMultimap<String,String> parseCSVData(ArrayList<String> data){
+    public LinkedListMultimap<String,String> parseCSVData(List<String> data){
 
         LinkedListMultimap<String,String> transformed = LinkedListMultimap.create();
         HashMap<String, ArrayList<String>> transformedData = new HashMap<String, ArrayList<String>>();
@@ -198,30 +180,27 @@ public class FileHelper {
         double[] doubList;
         String[] transformations;
         List<String> workingList;
+        LinkedListMultimap<String, String> discreteData = LinkedListMultimap.create();
 
         Iterator<String> keySetIterator =  data.keys().iterator();
         String test;
         Frequency frequency = new Frequency();
 
-
-
         while(keySetIterator.hasNext()){
             test = data.get(keySetIterator.next()).get(0);
+
             if(isDouble(test) == true || isInteger(test) == true){
                 workingList = data.get(keySetIterator.next());
                 doubList = transformToDouble(data.get(keySetIterator.next()));
                 transformations = linearTransform(doubList,firstGroup,lastGroup);
 
                 for(int i = 0;i<workingList.size();i++){
-                    workingList.set(i,transformations[i]);
+                    discreteData.put(keySetIterator.next(),transformations[i]);
                 }
-                data.
-
             }
-
-
         }
 
+        return discreteData;
     }
 
 }
