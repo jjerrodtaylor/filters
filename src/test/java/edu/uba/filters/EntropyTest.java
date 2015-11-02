@@ -12,12 +12,6 @@ import edu.uba.filters.Entropy;
 
 public class EntropyTest{
 
-    @Before
-    public void SetUp()
-    {
-        List<String> survived = Arrays.asList("1","0","1","1","0","1","0","0","0","1","0","1","0","0","1");
-        List<String> sex = Arrays.asList("0","1","0","1","1","0","0","1","1","0","1","0","0","1","1");
-    }
 
     @Test
     public void testEntropy(){
@@ -28,34 +22,81 @@ public class EntropyTest{
     }
 
     @Test
+    public void testConditionalProbability(){
+        //male = 1
+        //survived = 1
+
+        List<String> survived = Arrays.asList("1","0","1","1","0","1","0","0","0","1","0","1","0","0","1");
+        List<String> sex = Arrays.asList("0","1","0","1","1","0","0","1","1","0","1","0","0","1","1");
+        Entropy entropy = new Entropy();
+        double conditionalProb = entropy.conditionalProbability(survived,sex,"1","1");
+        assertEquals(.250,conditionalProb,.005);
+    }
+
+    @Test
+    public void testJointEntropy(){
+
+        //male = 1
+        //survived = 1
+
+        List<String> survived = Arrays.asList("1","0","1","1","0","1","0","0","0","1","0","1","0","0","1");
+        List<String> sex = Arrays.asList("0","1","0","1","1","0","0","1","1","0","1","0","0","1","1");
+        Entropy entropy = new Entropy();
+        double jointEntropy = entropy.jointEntropy(survived,sex);
+        assertEquals(1.99,jointEntropy,.006);
+    }
+
+    @Test
+    public void testSpecifiedConditionalEntropy(){
+
+        //male = 1
+        //survived = 1
+
+        List<String> survived = Arrays.asList("1","0","1","1","0","1","0","0","0","1","0","1","0","0","1");
+        List<String> sex = Arrays.asList("0","1","0","1","1","0","0","1","1","0","1","0","0","1","1");
+        Entropy entropy = new Entropy();
+        double specCondiEntropy = entropy.specifiedConditionalEntropy(survived,sex,"1","1");
+        assertEquals(.5,specCondiEntropy,.005);
+
+    }
+
+    @Test
     public void testConditionalEntropy(){
 
         //male = 1
         //survived = 1
-        /*sur sex
-        * 1    0
-        * 0    1
-        * 1    0
-        * 1    1
-        * 0    1
-        * 1    0
-        * 0    0
-        * 0    1
-        * 0    1
-        * 1    0
-        * 0    1
-        * 1    0
-        * 0    0
-        * 0    1
-        * 1    1
-        * p(survived|male) = 2/15
-        * p(male) = 8/15
-        * */
+
         List<String> survived = Arrays.asList("1","0","1","1","0","1","0","0","0","1","0","1","0","0","1");
         List<String> sex = Arrays.asList("0","1","0","1","1","0","0","1","1","0","1","0","0","1","1");
         Entropy entropy = new Entropy();
-        Double result = entropy.conditionalEntropy(survived,sex,"1","1");
-        assertEquals(.507,result,.006);
+        Double result = entropy.conditionalEntropy(survived,sex);
+        assertEquals(.996,result,.006);
+    }
+
+    @Test
+    public void testInformationGain(){
+
+        //male = 1
+        //survived = 1
+
+        List<String> survived = Arrays.asList("1","0","1","1","0","1","0","0","0","1","0","1","0","0","1");
+        List<String> sex = Arrays.asList("0","1","0","1","1","0","0","1","1","0","1","0","0","1","1");
+        Entropy entropy = new Entropy();
+        Double result = entropy.informationGain(survived,sex);
+        assertEquals(0,result,.005);
+    }
+
+    @Test
+    public void testSymmetricalUncertainty(){
+
+        //male = 1
+        //survived = 1
+
+        List<String> survived = Arrays.asList("1","0","1","1","0","1","0","0","0","1","0","1","0","0","1");
+        List<String> sex = Arrays.asList("0","1","0","1","1","0","0","1","1","0","1","0","0","1","1");
+        Entropy entropy = new Entropy();
+        Double result = entropy.symmetricalUncertainty(survived,sex);
+        assertEquals(0,result,.005);
     }
 
 

@@ -21,9 +21,12 @@ public class FrequencyTest {
             frequency.addValue(s);
         }
 
+        String[] keys = frequency.getKeys();
+
         assertEquals(2,frequency.getUniqueCount());
         assertEquals(15,frequency.getSumFreq());
         assertEquals(.466,frequency.getPct("1"),.005);
+        assertEquals("0",keys[1]);
 
     }
 }
