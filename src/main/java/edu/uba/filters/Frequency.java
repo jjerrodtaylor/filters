@@ -23,18 +23,24 @@ public class Frequency<T extends Comparable<T>> {
         event.add(data);
     }
 
-    /*public void clear(){
+    public void clear(){
 
-        while(event.entrySet().iterator().hasNext()){
-            String key = event.elementSet().iterator().next().toString();
-            event.remove(key);
-        }
-    }*/
+        this.event = null;
+        this.event2 = null;
+
+        this.event = HashMultiset.create();
+        this.event2 = LinkedListMultimap.create();
+    }
 
     public double getPct(T data){
         int numberOfIndElements = event.count(data);
         int totalNumOfElements = event.size();
         return (double) numberOfIndElements/totalNumOfElements;
+    }
+
+    public int getNum(T data){
+        int numberOfIndElements = event.count(data);
+        return numberOfIndElements;
     }
 
     public int getSumFreq(){
