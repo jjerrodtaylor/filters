@@ -5,6 +5,7 @@ import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
 import org.apache.commons.math3.stat.*;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 
@@ -12,11 +13,11 @@ public class Data {
 
     private LinkedListMultimap<String,String> data = LinkedListMultimap.create();
 
-    Data(){
+    public Data(){
         super();
     }
 
-    Data(LinkedListMultimap<String, String> data){
+    public Data(LinkedListMultimap<String, String> data){
         this.data = data;
     }
 
@@ -87,31 +88,41 @@ public class Data {
     }
 
 
-    public LinkedListMultimap<String,String> discretize(ListMultimap<String,String> data, int firstGroup, int lastGroup){
-        double useDoub;
+
+    public Data discretize(ListMultimap<String,String> data,LinkedList<String> headersToChange, int firstGroup, int lastGroup){
         double[] doubList;
         String[] transformations;
         List<String> workingList;
+        Data datos = new Data();
         LinkedListMultimap<String, String> discreteData = LinkedListMultimap.create();
 
-        Iterator<String> keySetIterator =  data.keys().iterator();
-        String test;
-        org.apache.commons.math3.stat.Frequency frequency = new org.apache.commons.math3.stat.Frequency();
+        String[] keys = Util.convertToStringArray(data.keySet().toArray());
+        for(int i=0;i<keys.length;i++){
+            workingList = data.get(keys[i]);
 
-        while(keySetIterator.hasNext()){
-            test = data.get(keySetIterator.next()).get(0);
+            if(headersToChange.size() > 0) {
+                String compare = headersToChange.getFirst();
+                if(keys[i].equalsIgnoreCase(compare)){
+                    headersToChange.removeFirst();
+                    doubList = transformToDouble(data.get(keys[i]));
+                    transformations = linearTransform(doubList,firstGroup, lastGroup);
 
-            if(isDouble(test) == true || isInteger(test) == true){
-                workingList = data.get(keySetIterator.next());
-                doubList = transformToDouble(data.get(keySetIterator.next()));
-                transformations = linearTransform(doubList,firstGroup,lastGroup);
+                    for(int j =0;j<workingList.size();j++){
+                        discreteData.put(keys[i],transformations[j]);
+                    }
 
-                for(int i = 0;i<workingList.size();i++){
-                    discreteData.put(keySetIterator.next(),transformations[i]);
                 }
+
             }
+
+            String stopper;
+                for(int j=0;j<workingList.size();j++) {
+                    discreteData.put(keys[i],workingList.get(j));
+                }
+
         }
 
-        return discreteData;
+        datos.setData(discreteData);
+        return datos;
     }
 }

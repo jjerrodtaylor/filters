@@ -2,6 +2,8 @@ package edu.uba.filters.Tools;
 
 import java.io.*;
 import java.util.*;
+
+import edu.uba.filters.Data;
 import org.apache.commons.io.FileUtils;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.LinkedListMultimap;
@@ -50,12 +52,13 @@ public class FileHelper {
         return fileContents;
     }
 
-    public LinkedListMultimap<String,String> parseCSVData(List<String> data){
+    public Data parseCSVData(List<String> data){
 
         LinkedListMultimap<String,String> transformed = LinkedListMultimap.create();
         HashMap<String, ArrayList<String>> transformedData = new HashMap<String, ArrayList<String>>();
         String[] headers = data.get(0).split(",");
         String[] temp;
+        Data datos = new Data();
 
         for(int i = 1;i<data.size()-1;i++){
             for(int j = 0;j<headers.length;j++){
@@ -64,6 +67,7 @@ public class FileHelper {
             }
         }
 
-        return transformed;
+        datos.setData(transformed);
+        return datos;
     }
 }

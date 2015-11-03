@@ -1,6 +1,7 @@
 package edu.uba.filters;
 
 import com.google.common.collect.LinkedListMultimap;
+import edu.uba.filters.Tools.FileHelper;
 import org.junit.Test;
 import org.junit.Test;
 import java.util.ArrayList;
@@ -46,5 +47,31 @@ public class DataTest {
         assertEquals(1.0,newDoubles[0],0.0);
     }
 
+    @Test
+    public void testLinearTransform(){
+        Data data = new Data();
+        double[] datos = new double[2];
+        datos[0]=10.0;
+        datos[1]=100.0;
+        String[] transformed = data.linearTransform(datos,1,5);
 
+        assertEquals("1",transformed[0]);
+        assertEquals("5",transformed[1]);
+
+    }
+
+    @Test
+    public void testDiscreteize(){
+        FileHelper fileHelper = new FileHelper();
+        List<String> lines = fileHelper.readFileToMemory("/Users/jamaaltaylor/Documents/datos/birthwt.txt");
+        LinkedList<String> headersToChange = new LinkedList<String>();
+        headersToChange.add("age");
+        headersToChange.add("lwt");
+        assertNotNull(lines);
+        assertEquals(186,lines.size());
+
+        Data freshData = fileHelper.parseCSVData(lines);
+        Data discreteData = freshData.discretize(freshData.getData(),headersToChange,1,5);
+
+    }
 }

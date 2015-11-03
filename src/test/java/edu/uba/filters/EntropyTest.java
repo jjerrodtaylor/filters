@@ -99,5 +99,10 @@ public class EntropyTest{
         assertEquals(0,result,.005);
     }
 
+    @Test
+    public void testFCBF(){
+
+    }
+
 
 }
