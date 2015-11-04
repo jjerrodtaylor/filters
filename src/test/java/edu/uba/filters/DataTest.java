@@ -71,7 +71,26 @@ public class DataTest {
         assertEquals(186,lines.size());
 
         Data freshData = fileHelper.parseCSVData(lines);
+        String untransformed = freshData.getData().get("age").get(0);
+        assertEquals(untransformed,"19");
         Data discreteData = freshData.discretize(freshData.getData(),headersToChange,1,5);
+        String transformed = discreteData.getData().get("age").get(0);
+        assertEquals("3",transformed);
+        assertEquals(184,discreteData.getData().get("age").size());
+    }
+
+    @Test
+    public void testFCBS(){
+        FileHelper fileHelper = new FileHelper();
+        List<String> lines = fileHelper.readFileToMemory("/Users/jamaaltaylor/Documents/datos/birthwt.txt");
+        LinkedList<String> headersToChange = new LinkedList<String>();
+        headersToChange.add("age");
+        headersToChange.add("lwt");
+
+        Data freshData = fileHelper.parseCSVData(lines);
+        Data discreteData = freshData.discretize(freshData.getData(),headersToChange,1,5);
+        Entropy entropy = new Entropy();
+        entropy.fcbf(discreteData,"lwt",.5);
 
     }
 }
