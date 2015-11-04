@@ -103,7 +103,7 @@ public class EntropyTest{
 
         Entropy entropy = new Entropy();
         Double result = entropy.conditionalEntropy(discreteData.getData().get("lwt"),discreteData.getData().get("age"));
-        assertEquals(.996,result,.006);
+        assertEquals(2.47,result,.006);
     }
 
     @Test
