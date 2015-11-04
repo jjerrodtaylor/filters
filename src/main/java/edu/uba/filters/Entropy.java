@@ -152,23 +152,27 @@ public class Entropy {
     }
 
     public double symmetricalUncertainty(List<String> interestedSet, List<String> reducingSet){
-        double symUnc = 2 * (informationGain(interestedSet, reducingSet)/(entropy(interestedSet)+entropy(reducingSet)));
+        double infoGain = informationGain(interestedSet,reducingSet);
+        double intSet = entropy(interestedSet);
+        double redSet = entropy(reducingSet);
+        double symUnc = 2 * ( infoGain/ (intSet+redSet) );
         return symUnc;
     }
 
 
-    public List<Pair<String,Double>> fcbf(Data data,String targetClass,String interestedClass, double threshold){
+    public List<Pair<String,Double>> fcbf(Data data,String targetClass, double threshold){
 
         int numOfKeys = data.getData().keySet().toArray().length;
         List<Pair<String,Double>> scoredFeatures = new LinkedList<Pair<String, Double>>();
         List<Pair<String,Double>> suAboveThreshold = new LinkedList<Pair<String, Double>>();
         List<Pair<String,Double>> predominantFeatures = new LinkedList<Pair<String, Double>>();
+        String[] keys = Util.convertToStringArray(data.getData().keySet().toArray());
 
         double symUnc = 0.0;
 
         //assign a score to the correlations
         for(int i=0;i<numOfKeys;i++){
-            symUnc = symmetricalUncertainty(data.getData().get(targetClass), data.getData().get(interestedClass));
+            symUnc = symmetricalUncertainty(data.getData().get(targetClass), data.getData().get(keys[i]));
             if(symUnc > threshold){
                 Object feature = data.getData().keySet().toArray()[i];
                 Pair<String,Double> featureIndex = new Pair<String,Double>(Util.convertToString(feature),symUnc);
