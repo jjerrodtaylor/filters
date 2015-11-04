@@ -4,6 +4,8 @@ import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
 import org.apache.commons.math3.stat.*;
+
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -72,14 +74,23 @@ public class Data {
     public String[] linearTransform(double[] data, int firstGroup, int lastGroup){
         double doubMin = StatUtils.min(data);
         double doubMax = StatUtils.max(data);
+        double firstPartNum;
+        double firstPartDen;
+        double firstPart;
+        double secondPart;
         double transformedNumber;
         int truncated;
         String[] transformations = new String[data.length];
 
         for(int i = 0;i<data.length;i++){
-            transformedNumber = ((data[i] - (double) firstGroup)/(doubMax - doubMin) *
-                    ((double)lastGroup - (double)firstGroup)) +
-                    firstGroup;
+            firstPartNum =  data[i] - doubMin;
+            firstPartDen = doubMax - doubMin;
+            firstPart = firstPartNum/firstPartDen;
+
+            secondPart = ( (double)lastGroup - (double)firstGroup );
+
+            transformedNumber = firstPart * secondPart +firstGroup;
+
             truncated = (int) transformedNumber;
             transformations[i] = Integer.toString(truncated);
         }
@@ -111,15 +122,19 @@ public class Data {
                         discreteData.put(keys[i],transformations[j]);
                     }
 
+                }else{
+                    for(int j=0;j<workingList.size();j++) {
+                        discreteData.put(keys[i],workingList.get(j));
+                    }
                 }
 
+            }else {
+
+                String stopper;
+                for (int j = 0; j < workingList.size(); j++) {
+                    discreteData.put(keys[i], workingList.get(j));
+                }
             }
-
-            String stopper;
-                for(int j=0;j<workingList.size();j++) {
-                    discreteData.put(keys[i],workingList.get(j));
-                }
-
         }
 
         datos.setData(discreteData);
