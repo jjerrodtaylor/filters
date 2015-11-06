@@ -75,8 +75,8 @@ public class DataTest {
         assertEquals(untransformed,"19");
         Data discreteData = freshData.discretize(freshData.getData(),headersToChange,1,5);
         String transformed = discreteData.getData().get("age").get(0);
-        assertEquals("3",transformed);
-        assertEquals(184,discreteData.getData().get("age").size());
+        assertEquals("1",transformed);
+        assertEquals(185,discreteData.getData().get("age").size());
     }
 
 }

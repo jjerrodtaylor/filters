@@ -36,6 +36,8 @@ public class EntropyTest{
         Entropy entropy = new Entropy();
         Double result = entropy.informationGain(freshData.getData().get("PlayBall"),freshData.getData().get("Wind"));
         assertEquals(0.048,result,.005);
+        result = entropy.informationGain(freshData.getData().get("PlayBall"),freshData.getData().get("Outlook"));
+        assertEquals(0.246,result,.005);
     }
 
 
@@ -49,5 +51,17 @@ public class EntropyTest{
         Entropy entropy = new Entropy();
         Double result = entropy.conditionalEntropy(freshData.getData().get("PlayBall"),freshData.getData().get("Wind"));
         assertEquals(0.892,result,.006);
+    }
+
+    @Test
+    public void testigRank(){
+
+        FileHelper fileHelper = new FileHelper();
+        List<String> lines = fileHelper.readFileToMemory("/Users/jamaaltaylor/Documents/datos/humidity.csv");
+        Data freshData = fileHelper.parseCSVData(lines);
+
+        Entropy entropy = new Entropy();
+        entropy.igRank(freshData,"PlayBall");
+
     }
 }

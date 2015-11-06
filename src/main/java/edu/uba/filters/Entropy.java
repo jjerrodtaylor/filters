@@ -19,20 +19,21 @@ public class Entropy extends Probability {
 
         double entropy = 0.0;
         double prob = 0.0;
-        Frequency<String> frequency = new Frequency<String>();
 
-        for(String s:data){
-            frequency.addValue(s);
+        if(this.iFrequency.getKeys().length==0){
+            this.setInterestedFrequency(data);
         }
 
-        String[] keys = frequency.getKeys();
+
+        String[] keys = iFrequency.getKeys();
 
         for(int i=0;i<keys.length;i++){
 
-            prob = frequency.getPct(keys[i]);
+            prob = iFrequency.getPct(keys[i]);
             entropy = entropy - prob * log(prob,2);
         }
 
+        iFrequency.clear();
         return entropy;
     }
 
@@ -94,6 +95,8 @@ public class Entropy extends Probability {
             entropy = entropy - (prob* -reducedEntropy);
         }
 
+        iFrequency.clear();
+        rFrequency.clear();
 
         return entropy;
     }
@@ -114,16 +117,20 @@ public class Entropy extends Probability {
 
         //assign a score to the correlations
         for(int i=0;i<numOfKeys;i++){
-            infoGain = informationGain(data.getData().get(targetClass), data.getData().get(keys[i]));
-            Object feature = data.getData().keySet().toArray()[i];
-            Pair<String,Double> featureIndex = new Pair<String,Double>(Util.convertToString(feature),infoGain);
-            scoredFeatures.add(featureIndex);
+            if(!targetClass.equalsIgnoreCase(keys[i])){
+                List<String> interestedSet = data.getData().get(keys[i]);
+                List<String> targetSet = data.getData().get(targetClass);
+                infoGain = informationGain(targetSet, interestedSet);
+                Object feature = data.getData().keySet().toArray()[i];
+                Pair<String,Double> featureIndex = new Pair<String,Double>(Util.convertToString(feature),infoGain);
+                scoredFeatures.add(featureIndex);
+            }
         }
 
         //sort the correlations in descending order
-        Collections.sort(scoredFeatures,new Comparator<Pair<String,Double>>(){
-            public int compare(Pair<String,Double> o1, Pair<String,Double> o2){
-                return o1.getValue().compareTo(o2.getValue());
+        Collections.sort(scoredFeatures, new Comparator<Pair<String, Double>>() {
+            public int compare(Pair<String, Double> o1, Pair<String, Double> o2) {
+                return o2.getValue().compareTo(o1.getValue());
             }
         });
 
