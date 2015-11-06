@@ -51,6 +51,26 @@ public class Entropy {
         return entropy;
     }
 
+    private double reducedEntropy(List<Pair<String,String>> data){
+
+        double entropy = 0.0;
+        double prob = 0.0;
+        Frequency<String> frequency = new Frequency<String>();
+
+        for(Pair<String,String> p:data){
+            frequency.addValue(p.getFirst());
+        }
+
+        String[] keys = frequency.getKeys();
+
+        for(int i=0;i<keys.length;i++){
+            prob = frequency.getPct(keys[i]);
+            entropy = entropy - prob * log(prob,2);
+        }
+
+        return entropy;
+    }
+
     /*
     * return conditional probability of P(interestedClass|reducingClass)
     * */
@@ -104,44 +124,46 @@ public class Entropy {
         return entropy;
     }
 
-    public double jointEntropy(List<String> set1, List<String> set2){
-
-        String[] set1Keys;
-        String[] set2Keys;
-        Double prob1;
-        Double prob2;
-        Double entropy = 0.0;
-
-        if(this.iFrequency.getKeys().length==0){
-            this.setInterestedFrequency(set1);
-        }
-
-        if(this.rFrequency.getKeys().length==0){
-            this.setReducingFrequency(set2);
-        }
-
-        set1Keys = this.iFrequency.getKeys();
-        set2Keys = this.rFrequency.getKeys();
-
-        for(int i=0;i<set1Keys.length;i++){
-            for(int j=0;j<set2Keys.length;j++){
-                prob1 = iFrequency.getPct(set1Keys[i]);
-                prob2 = rFrequency.getPct(set2Keys[j]);
-
-                entropy = entropy - (prob1*prob2)*log((prob1*prob2),2);
+    private List<Pair<String,String>> reduceSet(List<String> interestedSet, List<String> reducingSet, String reducingClass){
+         List<Pair<String,String>> reduced = new LinkedList<Pair<String, String>>();
+        for(int i=0;i<reducingSet.size();i++){
+            if(reducingClass.equalsIgnoreCase(reducingSet.get(i))){
+                Pair<String,String> addToSet = new Pair<String, String>(interestedSet.get(i),reducingSet.get(i));
+                reduced.add(addToSet);
             }
         }
 
-        return entropy;
+        return reduced;
     }
 
     public double conditionalEntropy(List<String> interestedSet, List<String> reducingSet){
 
-        double jointEntropy = jointEntropy(interestedSet,reducingSet);
-        double reducingEntropyX = entropy(reducingSet);
-        double conEntYgivenX = jointEntropy - reducingEntropyX;
+        String[] set2Keys;
+        double entropy = 0.0;
+        double reducedEntropy = 0.0;
+        List<Pair<String,String>> pairs;
 
-        return conEntYgivenX;
+        if(this.iFrequency.getKeys().length==0){
+            this.setInterestedFrequency(interestedSet);
+        }
+        if(this.rFrequency.getKeys().length==0){
+            this.setReducingFrequency(reducingSet);
+        }
+
+        set2Keys = this.rFrequency.getKeys();
+
+        for(int i=0;i<set2Keys.length;i++){
+            String key = set2Keys[i];
+
+            pairs = reduceSet(interestedSet,reducingSet,key);
+            reducedEntropy = reducedEntropy(pairs);
+
+            double prob = rFrequency.getPct(key);
+            entropy = entropy - (prob* -reducedEntropy);
+        }
+
+
+        return entropy;
     }
 
     public double informationGain(List<String> interestedSet, List<String> reducingSet){
@@ -151,14 +173,13 @@ public class Entropy {
         return infoGain;
     }
 
-    public double symmetricalUncertainty(List<String> interestedSet, List<String> reducingSet){
+    /*public double symmetricalUncertainty(List<String> interestedSet, List<String> reducingSet){
         double infoGain = informationGain(interestedSet,reducingSet);
         double intSet = entropy(interestedSet);
         double redSet = entropy(reducingSet);
         double symUnc = 2 * ( infoGain/ (intSet+redSet) );
         return symUnc;
     }
-
 
     public List<Pair<String,Double>> fcbf(Data data,String targetClass, double threshold){
 
@@ -209,7 +230,7 @@ public class Entropy {
         }
 
         return predominantFeatures;
-    }
+    }*/
 
     public void naiveBayesTrain(Data data,List<String> targetClass){
 

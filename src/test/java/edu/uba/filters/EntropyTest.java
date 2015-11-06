@@ -50,24 +50,6 @@ public class EntropyTest{
         assertEquals(.1,conditionalProb,.005);
     }
 
-    @Test
-    public void testJointEntropy(){
-
-
-        FileHelper fileHelper = new FileHelper();
-        List<String> lines = fileHelper.readFileToMemory("/Users/jamaaltaylor/Documents/datos/birthwt.txt");
-        Data freshData = fileHelper.parseCSVData(lines);
-
-        LinkedList<String> headersToChange = new LinkedList<String>();
-        headersToChange.add("age");
-        headersToChange.add("lwt");
-
-        Data discreteData = freshData.discretize(freshData.getData(), headersToChange, 1, 10);
-
-        Entropy entropy = new Entropy();
-        double jointEntropy = entropy.jointEntropy(discreteData.getData().get("lwt"),discreteData.getData().get("age"));
-        assertEquals(5.05,jointEntropy,.006);
-    }
 
     @Test
     public void testSpecifiedConditionalEntropy(){
@@ -103,37 +85,59 @@ public class EntropyTest{
 
         Entropy entropy = new Entropy();
         Double result = entropy.conditionalEntropy(discreteData.getData().get("lwt"),discreteData.getData().get("age"));
-        assertEquals(2.47,result,.006);
+        assertEquals(2.23,result,.006);
     }
 
     @Test
     public void testInformationGain(){
 
-        //male = 1
-        //survived = 1
+        FileHelper fileHelper = new FileHelper();
+        List<String> lines = fileHelper.readFileToMemory("/Users/jamaaltaylor/Documents/datos/birthwt.txt");
+        Data freshData = fileHelper.parseCSVData(lines);
 
-        List<String> survived = Arrays.asList("1","0","1","1","0","1","0","0","0","1","0","1","0","0","1");
-        List<String> sex = Arrays.asList("0","1","0","1","1","0","0","1","1","0","1","0","0","1","1");
+        LinkedList<String> headersToChange = new LinkedList<String>();
+        headersToChange.add("age");
+        headersToChange.add("lwt");
+
+        Data discreteData = freshData.discretize(freshData.getData(), headersToChange, 1, 10);
+
         Entropy entropy = new Entropy();
-        Double result = entropy.informationGain(survived,sex);
-        assertEquals(0,result,.005);
+        Double result = entropy.informationGain(discreteData.getData().get("lwt"),discreteData.getData().get("age"));
+        assertEquals(0.24,result,.005);
     }
 
     @Test
     public void testSymmetricalUncertainty(){
 
-        //male = 1
-        //survived = 1
+        FileHelper fileHelper = new FileHelper();
+        List<String> lines = fileHelper.readFileToMemory("/Users/jamaaltaylor/Documents/datos/birthwt.txt");
+        Data freshData = fileHelper.parseCSVData(lines);
 
-        List<String> survived = Arrays.asList("1","0","1","1","0","1","0","0","0","1","0","1","0","0","1");
-        List<String> sex = Arrays.asList("0","1","0","1","1","0","0","1","1","0","1","0","0","1","1");
+        LinkedList<String> headersToChange = new LinkedList<String>();
+        headersToChange.add("age");
+        headersToChange.add("lwt");
+
+        Data discreteData = freshData.discretize(freshData.getData(), headersToChange, 1, 10);
         Entropy entropy = new Entropy();
-        Double result = entropy.symmetricalUncertainty(survived,sex);
-        assertEquals(0,result,.005);
+        Double result = entropy.symmetricalUncertainty(discreteData.getData().get("lwt"),discreteData.getData().get("age"));
+        assertEquals(0.0969,result,.005);
     }
 
     @Test
     public void testFCBF(){
+
+        FileHelper fileHelper = new FileHelper();
+        List<String> lines = fileHelper.readFileToMemory("/Users/jamaaltaylor/Documents/datos/birthwt.txt");
+        Data freshData = fileHelper.parseCSVData(lines);
+
+        LinkedList<String> headersToChange = new LinkedList<String>();
+        headersToChange.add("age");
+        headersToChange.add("lwt");
+
+        Data discreteData = freshData.discretize(freshData.getData(), headersToChange, 1, 10);
+        Entropy entropy = new Entropy();
+        entropy.fcbf(discreteData,"lwt",.5);
+
 
     }
 
