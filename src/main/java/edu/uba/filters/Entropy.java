@@ -4,26 +4,11 @@ import java.util.*;
 import edu.uba.filters.Frequency;
 import org.apache.commons.math3.util.Pair;
 
-public class Entropy {
+public class Entropy extends Probability {
 
-    private Frequency<String> iFrequency = new Frequency<String>();
-    private Frequency<String> rFrequency = new Frequency<String>();
-    private HashMap<String,Double> priors = new HashMap<String, Double>();
 
-    Entropy(){
+    public Entropy(){
         super();
-    }
-
-    public void setInterestedFrequency(List<String> interestedFrequency){
-        for(String s: interestedFrequency){
-            this.iFrequency.addValue(s);
-        }
-    }
-
-    public void setReducingFrequency(List<String> reducingFrequency){
-        for(String s:reducingFrequency){
-            this.rFrequency.addValue(s);
-        }
     }
 
     private double log(double num, int base){
@@ -67,59 +52,6 @@ public class Entropy {
             prob = frequency.getPct(keys[i]);
             entropy = entropy - prob * log(prob,2);
         }
-
-        return entropy;
-    }
-
-    /*
-    * return conditional probability of P(interestedClass|reducingClass)
-    * */
-    public double conditionalProbability(List<String> interestedSet,
-                                         List<String> reducingSet,
-                                         String interestedClass,
-                                         String reducingClass){
-        List<Integer> conditionalData = new LinkedList<Integer>();
-
-        if(iFrequency.getKeys().length==0){
-            this.setInterestedFrequency(interestedSet);
-        }
-
-        if(rFrequency.getKeys().length==0){
-            this.setReducingFrequency(reducingSet);
-        }
-
-        for(int i = 0;i<reducingSet.size();i++){
-            if(reducingSet.get(i).equalsIgnoreCase(reducingClass)){
-                if(interestedSet.get(i).equalsIgnoreCase(interestedClass)){
-                    conditionalData.add(i);
-                }
-            }
-        }
-
-        int numerator = conditionalData.size();
-        int denominator = this.rFrequency.getNum(reducingClass);
-
-        return (double)numerator/denominator;
-    }
-
-    public double specifiedConditionalEntropy(List<String> interestedSet,
-                                              List<String> reducingSet,
-                                              String interestedClass, String reducingClass){
-
-        Double entropy = 0.0;
-        Double conditionalProb = 0.0;
-
-        //if the sets are empty then set it
-        if(this.iFrequency.getKeys().length==0){
-            this.setInterestedFrequency(interestedSet);
-        }
-
-        if(this.rFrequency.getKeys().length==0){
-            this.setReducingFrequency(reducingSet);
-        }
-
-        conditionalProb = conditionalProbability(interestedSet,reducingSet,interestedClass,reducingClass);
-        entropy = - conditionalProb * log(conditionalProb,2);
 
         return entropy;
     }
@@ -172,6 +104,53 @@ public class Entropy {
         double infoGain = entropy - conditionalEntropy;
         return infoGain;
     }
+
+    public List<Pair<String,Double>> igRank(Data data, String targetClass){
+
+        int numOfKeys = data.getData().keySet().toArray().length;
+        List<Pair<String,Double>> scoredFeatures = new LinkedList<Pair<String, Double>>();
+        String[] keys = Util.convertToStringArray(data.getData().keySet().toArray());
+        double infoGain = 0.0;
+
+        //assign a score to the correlations
+        for(int i=0;i<numOfKeys;i++){
+            infoGain = informationGain(data.getData().get(targetClass), data.getData().get(keys[i]));
+            Object feature = data.getData().keySet().toArray()[i];
+            Pair<String,Double> featureIndex = new Pair<String,Double>(Util.convertToString(feature),infoGain);
+            scoredFeatures.add(featureIndex);
+        }
+
+        //sort the correlations in descending order
+        Collections.sort(scoredFeatures,new Comparator<Pair<String,Double>>(){
+            public int compare(Pair<String,Double> o1, Pair<String,Double> o2){
+                return o1.getValue().compareTo(o2.getValue());
+            }
+        });
+
+        return scoredFeatures;
+    }
+
+    /*public double specifiedConditionalEntropy(List<String> interestedSet,
+                                              List<String> reducingSet,
+                                              String interestedClass, String reducingClass){
+
+        Double entropy = 0.0;
+        Double conditionalProb = 0.0;
+
+        //if the sets are empty then set it
+        if(this.iFrequency.getKeys().length==0){
+            this.setInterestedFrequency(interestedSet);
+        }
+
+        if(this.rFrequency.getKeys().length==0){
+            this.setReducingFrequency(reducingSet);
+        }
+
+        conditionalProb = conditionalProbability(interestedSet,reducingSet,interestedClass,reducingClass);
+        entropy = - conditionalProb * log(conditionalProb,2);
+
+        return entropy;
+    }*/
 
     /*public double symmetricalUncertainty(List<String> interestedSet, List<String> reducingSet){
         double infoGain = informationGain(interestedSet,reducingSet);
@@ -231,33 +210,4 @@ public class Entropy {
 
         return predominantFeatures;
     }*/
-
-    public void naiveBayesTrain(Data data,List<String> targetClass){
-
-        int numOfClasses = data.getData().keySet().toArray().length;
-        Object[] keyNames = data.getData().keySet().toArray();
-        Frequency<String> probs = new Frequency<String>();
-        double conditionalProb = 0.0;
-        String priorName;
-        String probName;
-
-        for(int i=0;i<targetClass.size();i++){
-            probName = targetClass.get(i)+"|"+targetClass.get(i);
-            probs.addValue(targetClass.get(i));
-            priors.put(probName,probs.getPct(targetClass.get(i)));
-        }
-
-        for(int i=1;i<numOfClasses;i++){
-            conditionalProb = conditionalProbability(data.getData().get(targetClass.get(i)),
-                                   data.getData().get(Util.convertToString(keyNames[i])),
-                                   targetClass.get(i),
-                                   Util.convertToString(keyNames[i]));
-            priorName = targetClass.get(i)+"|"+Util.convertToString(keyNames[i]);
-            priors.put(priorName,conditionalProb);
-        }
-    }
-
-    public void naiveBayesPredict(){
-
-    }
 }
