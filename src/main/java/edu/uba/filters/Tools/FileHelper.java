@@ -60,7 +60,7 @@ public class FileHelper {
         String[] temp;
         Data datos = new Data();
 
-        for(int i = 1;i<data.size()-1;i++){
+        for(int i = 1;i<data.size();i++){
             for(int j = 0;j<headers.length;j++){
                 temp = data.get(i).split(",");
                 transformed.put(headers[j],temp[j]);
