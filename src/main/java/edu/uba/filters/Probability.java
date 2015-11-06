@@ -36,14 +36,13 @@ public class Probability {
                                          String interestedClass,
                                          String reducingClass){
         List<Integer> conditionalData = new LinkedList<Integer>();
+        double returnProb = 0;
+        iFrequency.clear();
+        rFrequency.clear();
 
-        if(iFrequency.getKeys().length==0){
-            this.setInterestedFrequency(interestedSet);
-        }
+        this.setInterestedFrequency(interestedSet);
+        this.setReducingFrequency(reducingSet);
 
-        if(rFrequency.getKeys().length==0){
-            this.setReducingFrequency(reducingSet);
-        }
 
         for(int i = 0;i<reducingSet.size();i++){
             if(reducingSet.get(i).equalsIgnoreCase(reducingClass)){
@@ -56,7 +55,13 @@ public class Probability {
         int numerator = conditionalData.size();
         int denominator = this.rFrequency.getNum(reducingClass);
 
-        return (double)numerator/denominator;
+        if(denominator !=0){
+            returnProb = (double)numerator/denominator;
+        }
+
+        iFrequency.clear();
+        rFrequency.clear();
+        return returnProb;
     }
 
     public void naiveBayesTrain(Data data,List<String> targetClass){
@@ -68,17 +73,17 @@ public class Probability {
         String priorName;
         String probName;
 
-        for(int i=0;i<targetClass.size();i++){
-            probName = targetClass.get(i)+"|"+targetClass.get(i);
-            probs.addValue(targetClass.get(i));
-            priors.put(probName,probs.getPct(targetClass.get(i)));
-        }
+        iFrequency.clear();
+        rFrequency.clear();
+        this.setInterestedFrequency(targetClass);
+
 
         for(int i=1;i<numOfClasses;i++){
-            conditionalProb = conditionalProbability(data.getData().get(targetClass.get(i)),
-                    data.getData().get(Util.convertToString(keyNames[i])),
-                    targetClass.get(i),
-                    Util.convertToString(keyNames[i]));
+            String rClass = Util.convertToString(keyNames[i]);
+            List<String> reducingClass = data.getData().get(rClass);
+            String interestedClass = reducingClass.get()
+            String tClass = targetClass.get(i);
+            conditionalProb = conditionalProbability(targetClass, reducingClass, tClass, rClass);
             priorName = targetClass.get(i)+"|"+Util.convertToString(keyNames[i]);
             priors.put(priorName,conditionalProb);
         }
