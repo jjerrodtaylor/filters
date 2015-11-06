@@ -14,6 +14,7 @@ import java.util.List;
 public class Data {
 
     private LinkedListMultimap<String,String> data = LinkedListMultimap.create();
+    private LinkedList<String> headers = new LinkedList<String>();
 
     public Data(){
         super();
@@ -97,8 +98,6 @@ public class Data {
 
         return transformations;
     }
-
-
 
     public Data discretize(ListMultimap<String,String> data,LinkedList<String> headersToChange, int firstGroup, int lastGroup){
         double[] doubList;
