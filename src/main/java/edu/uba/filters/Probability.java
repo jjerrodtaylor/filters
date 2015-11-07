@@ -66,27 +66,53 @@ public class Probability {
 
     public void naiveBayesTrain(Data data,List<String> targetClass){
 
+        //initialize the variables
         int numOfClasses = data.getData().keySet().toArray().length;
         Object[] keyNames = data.getData().keySet().toArray();
-        Frequency<String> probs = new Frequency<String>();
         double conditionalProb = 0.0;
+        String[] rClass;
         String priorName;
-        String probName;
 
+        //clear the frequency distributions then
+        // set the distribution for the target class, get the target class keys
+        // and set the priors
         iFrequency.clear();
         rFrequency.clear();
         this.setInterestedFrequency(targetClass);
+        Object[] targetClassKeys = iFrequency.getKeys();
+        String[] tClass = Util.convertToStringArray(targetClassKeys);
 
-
-        for(int i=1;i<numOfClasses;i++){
-            String rClass = Util.convertToString(keyNames[i]);
-            List<String> reducingClass = data.getData().get(rClass);
-            String interestedClass = reducingClass.get()
-            String tClass = targetClass.get(i);
-            conditionalProb = conditionalProbability(targetClass, reducingClass, tClass, rClass);
-            priorName = targetClass.get(i)+"|"+Util.convertToString(keyNames[i]);
-            priors.put(priorName,conditionalProb);
+        for(int i=0;i<tClass.length;i++){
+            priors.put(tClass[i],iFrequency.getPct(tClass[i]));
         }
+
+        //for each explanatory variable
+        for(int i=1;i<numOfClasses;i++){
+
+            //calculate the probability of some target value
+            for(int j =0;j<targetClassKeys.length;j++){
+
+                //code to get the keys for the different reducing events
+                String reducingKey = Util.convertToString(keyNames[i]);
+                List<String> reducingClass = data.getData().get(reducingKey);
+                this.setReducingFrequency(reducingClass);
+                Object[] reducingClassKeys = rFrequency.getKeys();
+                rClass = Util.convertToStringArray(reducingClassKeys);
+
+                //given that some reducing event has occured
+                for(int k=0;k<reducingClassKeys.length;k++){
+
+                    //calculate the conditional probability now that you have the various target and reducing states
+                    conditionalProb = conditionalProbability(targetClass, reducingClass, tClass[j], rClass[k]);
+                    priorName = tClass[j]+"|"+rClass[k];
+                    priors.put(priorName,conditionalProb);
+                }
+                rFrequency.clear();
+            }
+        }
+
+        iFrequency.clear();
+        rFrequency.clear();
     }
 
     public String naiveBayesPredict(Data data,List<String> targetClasses){
