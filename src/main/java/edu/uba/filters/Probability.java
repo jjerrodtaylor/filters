@@ -9,7 +9,9 @@ public class Probability {
 
     protected Frequency<String> iFrequency = new Frequency<String>();
     protected Frequency<String> rFrequency = new Frequency<String>();
+    private String[] targetClassKeys;
     private HashMap<String,Double> priors = new HashMap<String, Double>();
+    private LinkedList<Pair<String,Double>> predictions = new LinkedList<Pair<String,Double>>();
 
 
     public Probability(){
@@ -28,6 +30,9 @@ public class Probability {
         }
     }
 
+    public LinkedList<Pair<String,Double>> getPredictions(){
+        return this.predictions;
+    }
     /*
    * return conditional probability of P(interestedClass|reducingClass)
    * */
@@ -64,82 +69,80 @@ public class Probability {
         return returnProb;
     }
 
-    public void naiveBayesTrain(Data data,List<String> targetClass){
-
-        //initialize the variables
-        int numOfClasses = data.getData().keySet().toArray().length;
-        Object[] keyNames = data.getData().keySet().toArray();
-        double conditionalProb = 0.0;
+    public void naiveBayes(Data data,List<String> targetClass, BayesOption bayesOption){
+        //intialize variables
+        int numOfClasses = data.getHeaders().size();
+        Object[] keyNames = data.getHeaders().toArray();
+        double conditionalProb = 1.0;
+        double prob = 1.0;
         String[] rClass;
         String priorName;
 
-        //clear the frequency distributions then
-        // set the distribution for the target class, get the target class keys
-        // and set the priors
+
         iFrequency.clear();
         rFrequency.clear();
-        this.setInterestedFrequency(targetClass);
-        Object[] targetClassKeys = iFrequency.getKeys();
-        String[] tClass = Util.convertToStringArray(targetClassKeys);
 
-        for(int i=0;i<tClass.length;i++){
-            priors.put(tClass[i],iFrequency.getPct(tClass[i]));
+        if(bayesOption.compareTo(BayesOption.TRAIN) == 0){
+            this.setInterestedFrequency(targetClass);
+            this.targetClassKeys = Util.convertToStringArray(iFrequency.getKeys());
+
+            for(int i=0;i<this.targetClassKeys.length;i++){
+                priors.put(this.targetClassKeys[i], iFrequency.getPct(this.targetClassKeys[i]));
+            }
         }
 
-        //for each explanatory variable
-        for(int i=1;i<numOfClasses;i++){
 
-            //calculate the probability of some target value
-            for(int j =0;j<targetClassKeys.length;j++){
+        //for each classification in the target class
+        for(int i=0;i<this.targetClassKeys.length;i++){
 
-                //code to get the keys for the different reducing events
-                String reducingKey = Util.convertToString(keyNames[i]);
+            //get all of the different classes for that variable
+            for(int j=0;j<numOfClasses;j++){
+
+                String reducingKey = Util.convertToString(keyNames[j]);
                 List<String> reducingClass = data.getData().get(reducingKey);
                 this.setReducingFrequency(reducingClass);
                 Object[] reducingClassKeys = rFrequency.getKeys();
                 rClass = Util.convertToStringArray(reducingClassKeys);
 
-                //given that some reducing event has occured
+
                 for(int k=0;k<reducingClassKeys.length;k++){
 
-                    //calculate the conditional probability now that you have the various target and reducing states
-                    conditionalProb = conditionalProbability(targetClass, reducingClass, tClass[j], rClass[k]);
-                    priorName = tClass[j]+"|"+rClass[k];
-                    priors.put(priorName,conditionalProb);
+                    if(bayesOption.compareTo(BayesOption.TRAIN) == 0){
+                        conditionalProb = conditionalProbability(targetClass, reducingClass, this.targetClassKeys[i], rClass[k]);
+                        priorName = this.targetClassKeys[i]+"|"+rClass[k];
+                        priors.put(priorName,conditionalProb);
+                    }
+
+                    if(bayesOption.compareTo(BayesOption.PREDICT) == 0){
+                        priorName = this.targetClassKeys[i]+"|"+rClass[k];
+                        prob = prob * priors.get(priorName);
+
+                    }
                 }
                 rFrequency.clear();
+
             }
+
+            if(bayesOption.compareTo(BayesOption.PREDICT) == 0){
+                prob = prob * priors.get(this.targetClassKeys[i]);
+                Pair<String,Double> pred = new Pair<String, Double>(this.targetClassKeys[i],prob);
+                this.predictions.add(pred);
+            }
+
         }
 
-        iFrequency.clear();
-        rFrequency.clear();
+        this.iFrequency.clear();
+        this.rFrequency.clear();
+
     }
 
-    public String naiveBayesPredict(Data data,List<String> targetClasses){
-
-        int numOfKeys = data.getData().keySet().toArray().length;
-        Object[] keyNames = data.getData().keySet().toArray();
-        List<Pair<String,Double>> predictions = new LinkedList<Pair<String, Double>>();
-        double prob = 0;
-        String name = null;
-
-        for(int j=0;j<targetClasses.size();j++){
-            prob = priors.get(targetClasses.get(j));
-            for(int i=0;i<numOfKeys;i++){
-                name = targetClasses.get(j)+"|"+Util.convertToString(keyNames[i]);
-                prob = prob * priors.get(name);
-            }
-            Pair<String,Double> pred = new Pair<String, Double>(targetClasses.get(j),prob);
-        }
-
+    public String getNaiveBayesPrediction(){
         Collections.sort(predictions, new Comparator<Pair<String, Double>>() {
             public int compare(Pair<String, Double> o1, Pair<String, Double> o2) {
-                return o1.getValue().compareTo(o2.getValue());
+                return o2.getValue().compareTo(o1.getValue());
             }
         });
-
-        return predictions.get(0).getKey();
-
+        return this.predictions.get(0).getKey();
     }
 
 }

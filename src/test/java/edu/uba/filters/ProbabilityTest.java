@@ -1,10 +1,11 @@
 package edu.uba.filters;
 
-
 import edu.uba.filters.Tools.FileHelper;
 import org.junit.Test;
-
 import java.util.List;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
+import edu.uba.filters.Entropy;
 
 public class ProbabilityTest {
 
@@ -14,8 +15,16 @@ public class ProbabilityTest {
         List<String> lines = fileHelper.readFileToMemory("/Users/jamaaltaylor/Documents/datos/humidity.csv");
         Data freshData = fileHelper.parseCSVData(lines);
 
+        List<String> predictLines = fileHelper.readFileToMemory("/Users/jamaaltaylor/Documents/datos/predict.csv");
+        Data predictData = fileHelper.parseCSVData(predictLines);
         Entropy entropy = new Entropy();
         Probability probability = new Probability();
-        probability.naiveBayesTrain(freshData,freshData.getData().get("PlayBall"));
+        //probability.naiveBayesTrain(freshData,freshData.getData().get("PlayBall"));
+        predictData.removeColumn("Day");
+        freshData.removeColumn("Day");
+        probability.naiveBayes(freshData, freshData.getData().get("PlayBall"), BayesOption.TRAIN);
+        probability.naiveBayes(predictData,predictData.getData().get("PlayBall"),BayesOption.PREDICT);
+        assertEquals(2,probability.getPredictions().size());
+
     }
 }

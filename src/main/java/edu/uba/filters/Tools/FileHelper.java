@@ -59,6 +59,7 @@ public class FileHelper {
         String[] headers = data.get(0).split(",");
         String[] temp;
         Data datos = new Data();
+        datos.setHeaders(headers);
 
         for(int i = 1;i<data.size();i++){
             for(int j = 0;j<headers.length;j++){

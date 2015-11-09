@@ -24,6 +24,22 @@ public class Data {
         this.data = data;
     }
 
+    public void setHeaders(LinkedList<String> headers){
+
+        this.headers = headers;
+
+    }
+
+    public void setHeaders(String[] headers){
+        for(int i=0;i<headers.length;i++){
+            this.headers.add(headers[i]);
+        }
+    }
+
+    public LinkedList<String> getHeaders(){
+        return headers;
+    }
+
     public LinkedListMultimap<String, String> getData() {
         return data;
     }
@@ -138,5 +154,16 @@ public class Data {
 
         datos.setData(discreteData);
         return datos;
+    }
+
+    public void removeColumn(String columnName){
+        data.removeAll(columnName);
+        LinkedList<String> newHeaders = new LinkedList<String>();
+        for(int i =0;i<this.headers.size();i++){
+            if(!headers.get(i).equalsIgnoreCase(columnName) == true){
+                newHeaders.add(this.headers.get(i));
+            }
+        }
+        this.headers = newHeaders;
     }
 }
