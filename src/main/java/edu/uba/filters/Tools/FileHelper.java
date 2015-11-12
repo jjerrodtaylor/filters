@@ -2,13 +2,10 @@ package edu.uba.filters.Tools;
 
 import java.io.*;
 import java.util.*;
-
+import com.opencsv.CSVReader;
 import edu.uba.filters.Data;
 import org.apache.commons.io.FileUtils;
-import com.google.common.collect.ListMultimap;
 import com.google.common.collect.LinkedListMultimap;
-import org.apache.commons.math3.stat.Frequency;
-import org.apache.commons.math3.stat.StatUtils;
 
 
 
@@ -38,13 +35,12 @@ public class FileHelper {
         }
     }
 
-    public List<String> readFileToMemory(String filepath)
+    public List<String[]> readFileToMemory(String filepath)
     {
-        List<String> fileContents = new ArrayList<String>();
-        File file = new File(filepath);
-
-        try{
-            fileContents = FileUtils.readLines(file,"UTF-8");
+        List<String[]> fileContents = new ArrayList<String[]>();
+        try {
+            CSVReader reader = new CSVReader(new FileReader(filepath));
+            fileContents = reader.readAll();
         }catch (IOException e){
             e.printStackTrace();
         }
@@ -55,11 +51,11 @@ public class FileHelper {
     public Data parseCSVData(List<String> data){
 
         LinkedListMultimap<String,String> transformed = LinkedListMultimap.create();
-        HashMap<String, ArrayList<String>> transformedData = new HashMap<String, ArrayList<String>>();
         String[] headers = data.get(0).split(",");
         String[] temp;
         Data datos = new Data();
         datos.setHeaders(headers);
+
 
         for(int i = 1;i<data.size();i++){
             for(int j = 0;j<headers.length;j++){
@@ -70,5 +66,15 @@ public class FileHelper {
 
         datos.setData(transformed);
         return datos;
+    }
+
+    public void deserializeCSV(){
+        List<String[]> definitions = new ArrayList<String[]>();
+        try {
+            CSVReader reader = new CSVReader(new FileReader("/Users/jamaaltaylor/Documents/datos/InnoCentive_data.csv"));
+            definitions = reader.readAll();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
     }
 }
