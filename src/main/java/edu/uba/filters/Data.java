@@ -1,26 +1,21 @@
 package edu.uba.filters;
 
-import com.google.common.collect.LinkedListMultimap;
-import com.google.common.collect.ListMultimap;
-import com.google.common.collect.Multimap;
+import com.google.common.collect.*;
 import org.apache.commons.math3.stat.*;
 
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 
 public class Data {
 
-    private LinkedListMultimap<String,String> data = LinkedListMultimap.create();
-    private LinkedList<String> headers = new LinkedList<String>();
+    private Multimap<String,String> data = LinkedListMultimap.create();
+    private List<String> headers = new LinkedList<String>();
 
     public Data(){
         super();
     }
 
-    public Data(LinkedListMultimap<String, String> data){
+    public Data(Multimap<String,String> data){
         this.data = data;
     }
 
@@ -36,15 +31,35 @@ public class Data {
         }
     }
 
-    public LinkedList<String> getHeaders(){
+    public List<String> getHeaders(){
         return headers;
     }
 
-    public LinkedListMultimap<String, String> getData() {
+    public Multimap<String,String> getData() {
         return data;
     }
 
-    public void setData(LinkedListMultimap<String, String> data) {
+    public List<String> getDataColumn(String name){
+        int hI = 0;
+        List<String> returnList;
+        Object[] keySet = data.keySet().toArray();
+        String[] keySetString = Util.convertToStringArray(keySet);
+        for(int i=0;i<keySet.length;i++){
+            if(keySetString[i].equalsIgnoreCase(name)){
+                break;
+            }
+        }
+        returnList = (List)data.get(name);//.get(hI));
+        return returnList;
+    }
+
+    public String getDataPoint(String columnName, Integer row){
+        List<String> column = getDataColumn(columnName);
+        String rowValue = column.get(row);
+        return rowValue;
+    }
+
+    public void setData(Multimap<String, String> data) {
         this.data = data;
     }
 
@@ -115,7 +130,8 @@ public class Data {
         return transformations;
     }
 
-    public Data discretize(ListMultimap<String,String> data,LinkedList<String> headersToChange, int firstGroup, int lastGroup){
+
+    public Data discretize(Multimap<String,String> data,List<String> headersToChange, int firstGroup, int lastGroup){
         double[] doubList;
         String[] transformations;
         List<String> workingList;
@@ -124,13 +140,13 @@ public class Data {
 
         String[] keys = Util.convertToStringArray(data.keySet().toArray());
         for(int i=0;i<keys.length;i++){
-            workingList = data.get(keys[i]);
+            workingList = new ArrayList(data.get(keys[i]));
 
             if(headersToChange.size() > 0) {
-                String compare = headersToChange.getFirst();
+                String compare = headersToChange.get(0);//getFirst();
                 if(keys[i].equalsIgnoreCase(compare)){
-                    headersToChange.removeFirst();
-                    doubList = transformToDouble(data.get(keys[i]));
+                    headersToChange.remove(0);//removeFirst();
+                    doubList = transformToDouble(new ArrayList(data.get(keys[i])));
                     transformations = linearTransform(doubList,firstGroup, lastGroup);
 
                     for(int j =0;j<workingList.size();j++){
@@ -145,7 +161,7 @@ public class Data {
 
             }else {
 
-                String stopper;
+
                 for (int j = 0; j < workingList.size(); j++) {
                     discreteData.put(keys[i], workingList.get(j));
                 }

@@ -22,7 +22,7 @@ public class EntropyTest{
         Data freshData = fileHelper.parseCSVData(lines);
 
         Entropy entropy = new Entropy();
-        Double result = entropy.entropy(freshData.getData().get("PlayBall"));
+        Double result = entropy.entropy(new ArrayList(freshData.getData().get("PlayBall")));
         assertEquals(.940,result,.006);
     }
 
@@ -34,9 +34,9 @@ public class EntropyTest{
         Data freshData = fileHelper.parseCSVData(lines);
 
         Entropy entropy = new Entropy();
-        Double result = entropy.informationGain(freshData.getData().get("PlayBall"),freshData.getData().get("Wind"));
+        Double result = entropy.informationGain(new ArrayList(freshData.getData().get("PlayBall")),new ArrayList(freshData.getData().get("Wind")));
         assertEquals(0.048,result,.005);
-        result = entropy.informationGain(freshData.getData().get("PlayBall"),freshData.getData().get("Outlook"));
+        result = entropy.informationGain(new ArrayList(freshData.getData().get("PlayBall")),new ArrayList(freshData.getData().get("Outlook")));
         assertEquals(0.246,result,.005);
     }
 
@@ -49,7 +49,7 @@ public class EntropyTest{
         Data freshData = fileHelper.parseCSVData(lines);
 
         Entropy entropy = new Entropy();
-        Double result = entropy.conditionalEntropy(freshData.getData().get("PlayBall"),freshData.getData().get("Wind"));
+        Double result = entropy.conditionalEntropy(new ArrayList(freshData.getData().get("PlayBall")),new ArrayList(freshData.getData().get("Wind")));
         assertEquals(0.892,result,.006);
     }
 

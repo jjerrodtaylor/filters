@@ -26,8 +26,13 @@
           <version>2.4</version>
       </dependency>
       <dependency>
-          <groupId>org.apache.commons</groupId>
-          <artifactId>commons-lang3</artifactId>
+          <groupId>joinery</groupId>
+          <artifactId>joinery-dataframe</artifactId>
+          <version>1.7</version>
+      </dependency>
+      <dependency>
+          <groupId>com.opencsv</groupId>
+          <artifactId>opencsv</artifactId>
           <version>3.4</version>
       </dependency>
       <dependency>

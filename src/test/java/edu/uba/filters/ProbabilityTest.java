@@ -2,6 +2,8 @@ package edu.uba.filters;
 
 import edu.uba.filters.Tools.FileHelper;
 import org.junit.Test;
+
+import java.util.ArrayList;
 import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.*;
@@ -22,8 +24,8 @@ public class ProbabilityTest {
         //probability.naiveBayesTrain(freshData,freshData.getData().get("PlayBall"));
         predictData.removeColumn("Day");
         freshData.removeColumn("Day");
-        probability.naiveBayes(freshData, freshData.getData().get("PlayBall"), BayesOption.TRAIN);
-        probability.naiveBayes(predictData,predictData.getData().get("PlayBall"),BayesOption.PREDICT);
+        probability.naiveBayes(freshData, new ArrayList(freshData.getData().get("PlayBall")), BayesOption.TRAIN);
+        probability.naiveBayes(predictData,new ArrayList(predictData.getData().get("PlayBall")),BayesOption.PREDICT);
         assertEquals(2,probability.getPredictions().size());
 
     }
