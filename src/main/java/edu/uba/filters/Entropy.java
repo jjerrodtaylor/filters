@@ -118,8 +118,8 @@ public class Entropy extends Probability {
         //assign a score to the correlations
         for(int i=0;i<numOfKeys;i++){
             if(!targetClass.equalsIgnoreCase(keys[i])){
-                List<String> interestedSet = data.getData().get(keys[i]);
-                List<String> targetSet = data.getData().get(targetClass);
+                List<String> interestedSet = new ArrayList(data.getData().get(keys[i]));
+                List<String> targetSet = new ArrayList(data.getData().get(targetClass));
                 infoGain = informationGain(targetSet, interestedSet);
                 Object feature = data.getData().keySet().toArray()[i];
                 Pair<String,Double> featureIndex = new Pair<String,Double>(Util.convertToString(feature),infoGain);

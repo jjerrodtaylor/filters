@@ -13,11 +13,6 @@ public class Probability {
     private HashMap<String,Double> priors = new HashMap<String, Double>();
     private LinkedList<Pair<String,Double>> predictions = new LinkedList<Pair<String,Double>>();
 
-
-    public Probability(){
-        super();
-    }
-
     public void setInterestedFrequency(List<String> interestedFrequency){
         for(String s: interestedFrequency){
             this.iFrequency.addValue(s);
@@ -99,7 +94,7 @@ public class Probability {
             for(int j=0;j<numOfClasses;j++){
 
                 String reducingKey = Util.convertToString(keyNames[j]);
-                List<String> reducingClass = data.getData().get(reducingKey);
+                List<String> reducingClass = new ArrayList(data.getData().get(reducingKey));
                 this.setReducingFrequency(reducingClass);
                 Object[] reducingClassKeys = rFrequency.getKeys();
                 rClass = Util.convertToStringArray(reducingClassKeys);
