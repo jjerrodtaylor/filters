@@ -1,8 +1,5 @@
 package edu.uba.filters.Schema;
 
-import org.jsefa.Deserializer;
-import org.jsefa.Deserializer.*;
-import org.jsefa.csv.*;
 
 public class Definition {
     public Integer record_ID;

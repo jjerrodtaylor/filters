@@ -64,10 +64,10 @@ public class Probability {
         return returnProb;
     }
 
-    public void naiveBayes(Data data,List<String> targetClass, BayesOption bayesOption){
+    public void naiveBayes(Data data,List<String> targetClass, BayesOption bayesOption,boolean headers){
         //intialize variables
-        int numOfClasses = data.getHeaders().size();
-        Object[] keyNames = data.getHeaders().toArray();
+        int numOfClasses = data.getNumOfKeys();//.getHeaders().size();
+        String[] keyNames = data.getKeys();//  data.getHeaders().toArray();
         double conditionalProb = 1.0;
         double prob = 1.0;
         String[] rClass;
@@ -82,8 +82,9 @@ public class Probability {
             this.targetClassKeys = Util.convertToStringArray(iFrequency.getKeys());
 
             for(int i=0;i<this.targetClassKeys.length;i++){
-                priors.put(this.targetClassKeys[i], iFrequency.getPct(this.targetClassKeys[i]));
+                priors.put(this.targetClassKeys[i],iFrequency.getPct(this.targetClassKeys[i]));
             }
+
         }
 
 
@@ -94,7 +95,7 @@ public class Probability {
             for(int j=0;j<numOfClasses;j++){
 
                 String reducingKey = Util.convertToString(keyNames[j]);
-                List<String> reducingClass = new ArrayList(data.getData().get(reducingKey));
+                List<String> reducingClass = data.dataColumn(reducingKey,DataOption.GET,true);// new ArrayList(data.getData().get(reducingKey));
                 this.setReducingFrequency(reducingClass);
                 Object[] reducingClassKeys = rFrequency.getKeys();
                 rClass = Util.convertToStringArray(reducingClassKeys);
@@ -118,7 +119,7 @@ public class Probability {
 
             }
 
-            if(bayesOption.compareTo(BayesOption.PREDICT) == 0){
+            if(BayesOption.PREDICT.compareTo(bayesOption) == 0){
                 prob = prob * priors.get(this.targetClassKeys[i]);
                 Pair<String,Double> pred = new Pair<String, Double>(this.targetClassKeys[i],prob);
                 this.predictions.add(pred);

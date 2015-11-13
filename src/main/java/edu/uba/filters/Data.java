@@ -8,59 +8,57 @@ import java.util.*;
 
 public class Data {
 
-    private Multimap<String,String> data = LinkedListMultimap.create();
-    private List<String> headers = new LinkedList<String>();
+    public List<String[]> getData() {
+        return data;
+    }
+
+    public void setData(List<String[]> data) {
+        this.data = data;
+    }
+
+
+    private List<String[]> data;
 
     public Data(){
         super();
     }
 
-    public Data(Multimap<String,String> data){
+    public Data(List<String[]> data){
         this.data = data;
     }
 
-    public void setHeaders(LinkedList<String> headers){
 
-        this.headers = headers;
+    public List<String> dataColumn(String name, DataOption dataOption, Boolean header){
+        List<String> column = new ArrayList<String>();
+        List<String[]> removed = new ArrayList<String[]>();
+        Integer length = data.get(0).length;
+        String[] keySet = data.get(0);
+        String[] newList = null;
+        Integer columnGet = null;
 
-    }
-
-    public void setHeaders(String[] headers){
-        for(int i=0;i<headers.length;i++){
-            this.headers.add(headers[i]);
-        }
-    }
-
-    public List<String> getHeaders(){
-        return headers;
-    }
-
-    public Multimap<String,String> getData() {
-        return data;
-    }
-
-    public List<String> getDataColumn(String name){
-        int hI = 0;
-        List<String> returnList;
-        Object[] keySet = data.keySet().toArray();
-        String[] keySetString = Util.convertToStringArray(keySet);
-        for(int i=0;i<keySet.length;i++){
-            if(keySetString[i].equalsIgnoreCase(name)){
+        for(int i=0;i<length;i++){
+            if(name.equalsIgnoreCase(keySet[i])){
+                columnGet = i;
                 break;
             }
         }
-        returnList = (List)data.get(name);//.get(hI));
-        return returnList;
-    }
 
-    public String getDataPoint(String columnName, Integer row){
-        List<String> column = getDataColumn(columnName);
-        String rowValue = column.get(row);
-        return rowValue;
-    }
+        if(columnGet != null){
+            if(DataOption.GET.compareTo(dataOption) == 0){
+                if(header == true){
+                    for(int i=1;i<data.size();i++){
+                        column.add(data.get(i)[columnGet]);
+                    }
+                }else{
+                    for(int i=0;i<data.size();i++){
+                        column.add(data.get(i)[columnGet]);
+                    }
+                }
+            }
+        }
 
-    public void setData(Multimap<String, String> data) {
-        this.data = data;
+
+        return column;
     }
 
     public boolean isDouble(String check){
@@ -82,6 +80,23 @@ public class Data {
             return false;
         }
 
+    }
+
+    public Integer getNumOfKeys(){
+        return data.get(0).length;
+    }
+
+    public String[] getKeys(){
+        String[] keys = null;
+        if(data != null){
+            keys = data.get(0);
+        }
+
+        return keys;
+    }
+
+    public String getKey(Integer index){
+        return data.get(0)[index];
     }
 
     public double[] transformToDouble(List<String> data){
@@ -130,32 +145,32 @@ public class Data {
         return transformations;
     }
 
-
-    public Data discretize(Multimap<String,String> data,List<String> headersToChange, int firstGroup, int lastGroup){
+    public Data discretize(List<String[]> data,List<String> headersToChange, int firstGroup, int lastGroup){
         double[] doubList;
         String[] transformations;
         List<String> workingList;
         Data datos = new Data();
-        LinkedListMultimap<String, String> discreteData = LinkedListMultimap.create();
+        List<String[]> discreteData = new ArrayList<String[]>();
 
-        String[] keys = Util.convertToStringArray(data.keySet().toArray());
+        String[] keys = data.get(0);//Util.convertToStringArray(data.keySet().toArray());
         for(int i=0;i<keys.length;i++){
-            workingList = new ArrayList(data.get(keys[i]));
+            workingList = dataColumn(keys[i],DataOption.GET,true);
 
             if(headersToChange.size() > 0) {
                 String compare = headersToChange.get(0);//getFirst();
                 if(keys[i].equalsIgnoreCase(compare)){
                     headersToChange.remove(0);//removeFirst();
-                    doubList = transformToDouble(new ArrayList(data.get(keys[i])));
+                    doubList = transformToDouble(dataColumn(keys[i],DataOption.GET,true));
                     transformations = linearTransform(doubList,firstGroup, lastGroup);
 
                     for(int j =0;j<workingList.size();j++){
-                        discreteData.put(keys[i],transformations[j]);
+
+                        discreteData.get(i)[j] = transformations[j];
                     }
 
                 }else{
                     for(int j=0;j<workingList.size();j++) {
-                        discreteData.put(keys[i],workingList.get(j));
+                        discreteData.get(i)[j] = workingList.get(j);
                     }
                 }
 
@@ -163,7 +178,7 @@ public class Data {
 
 
                 for (int j = 0; j < workingList.size(); j++) {
-                    discreteData.put(keys[i], workingList.get(j));
+                    discreteData.get(i)[j] = workingList.get(j);
                 }
             }
         }
@@ -172,14 +187,9 @@ public class Data {
         return datos;
     }
 
-    public void removeColumn(String columnName){
-        data.removeAll(columnName);
-        LinkedList<String> newHeaders = new LinkedList<String>();
-        for(int i =0;i<this.headers.size();i++){
-            if(!headers.get(i).equalsIgnoreCase(columnName) == true){
-                newHeaders.add(this.headers.get(i));
-            }
-        }
-        this.headers = newHeaders;
+    public void removeColumn(String column){
+
     }
+
+
 }

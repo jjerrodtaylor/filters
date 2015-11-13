@@ -13,6 +13,5 @@ public class FileHelperTest {
     @Test
     public void fileHelperTest(){
         FileHelper fileHelper = new FileHelper();
-        fileHelper.deserializeCSV();
     }
 }

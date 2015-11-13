@@ -9,11 +9,9 @@ import java.util.*;
 
 public class Sample {
 
-    private List<String> randomSample;
-    private List<Integer> randomSampleNumbers;
+    /*private List<String[]> randomSample;
     private Data randomSampleData;
     private List<String> headersToChange;
-    private Table<Integer,String,String> table;
     private int firstGroup;
     private int lastGroup;
 
@@ -37,20 +35,6 @@ public class Sample {
         return randomSampleData;
     }
 
-    public void createSampleTable(Multimap<String,String> sample){
-        Object[] keys = sample.keySet().toArray();
-        table = HashBasedTable.create();
-
-        for(int i=0;i<keys.length;i++){
-            String columnName = Util.convertToString(keys[0]);
-            int jsize = randomSampleData.getDataColumn(columnName).size();
-            for(int j=0;j<jsize;j++){
-                int row = j;
-                String column = Util.convertToString(keys[i]);
-                table.put(j,column,randomSampleData.getDataPoint(column,row));
-            }
-        }
-    }
 
     public void randomSampleReplacement(List<String> data, int numOfSamplesToDraw){
         List<String> randomSample = new ArrayList<String>();
@@ -64,9 +48,8 @@ public class Sample {
         }
 
         this.randomSample = randomSample;
-        this.randomSampleData = fileHelper.parseCSVData(randomSample);
+        this.randomSampleData = fileHelper.readFileToMemory()
         randomSampleData = randomSampleData.discretize(randomSampleData.getData(),this.headersToChange,this.firstGroup,this.lastGroup);
-        this.createSampleTable(randomSampleData.getData());
     }
 
     public List<Integer> randomSample(List<String> data, int numOfSamplesToDraw){
@@ -110,7 +93,7 @@ public class Sample {
 
         for(int i=0;i<numTimesToResample;i++){
             resample = randomSample(this.randomSample,numInResample);
-            List<String> interSet = (List) table.column(interestedSet).values();
+            List<String> interSet = data.dataColumn(interestedSet,DataOption.GET);
             List<String> redSet = (List) table.column(reducingSet).values();
 
             resampledStat = entropy.informationGain(interSet,redSet);
@@ -118,5 +101,5 @@ public class Sample {
         }
 
         return bootstrappedStat;
-    }
+    }*/
 }

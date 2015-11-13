@@ -48,7 +48,7 @@ public class FileHelper {
         return fileContents;
     }
 
-    public Data parseCSVData(List<String> data){
+    /*public Data parseCSVData(List<String> data){
 
         LinkedListMultimap<String,String> transformed = LinkedListMultimap.create();
         String[] headers = data.get(0).split(",");
@@ -66,15 +66,5 @@ public class FileHelper {
 
         datos.setData(transformed);
         return datos;
-    }
-
-    public void deserializeCSV(){
-        List<String[]> definitions = new ArrayList<String[]>();
-        try {
-            CSVReader reader = new CSVReader(new FileReader("/Users/jamaaltaylor/Documents/datos/InnoCentive_data.csv"));
-            definitions = reader.readAll();
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-    }
+    }*/
 }

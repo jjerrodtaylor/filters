@@ -110,19 +110,19 @@ public class Entropy extends Probability {
 
     public List<Pair<String,Double>> igRank(Data data, String targetClass){
 
-        int numOfKeys = data.getData().keySet().toArray().length;
+        int numOfKeys = data.getNumOfKeys();
         List<Pair<String,Double>> scoredFeatures = new LinkedList<Pair<String, Double>>();
-        String[] keys = Util.convertToStringArray(data.getData().keySet().toArray());
+        String[] keys = data.getKeys();
         double infoGain = 0.0;
 
         //assign a score to the correlations
         for(int i=0;i<numOfKeys;i++){
             if(!targetClass.equalsIgnoreCase(keys[i])){
-                List<String> interestedSet = new ArrayList(data.getData().get(keys[i]));
-                List<String> targetSet = new ArrayList(data.getData().get(targetClass));
+                List<String> interestedSet = data.dataColumn(keys[i],DataOption.GET,true);// new ArrayList(data.getData().get(keys[i]));
+                List<String> targetSet = data.dataColumn(targetClass,DataOption.GET,true);// new ArrayList(data.getData().get(targetClass));
                 infoGain = informationGain(targetSet, interestedSet);
-                Object feature = data.getData().keySet().toArray()[i];
-                Pair<String,Double> featureIndex = new Pair<String,Double>(Util.convertToString(feature),infoGain);
+                String feature = data.getKey(i);
+                Pair<String,Double> featureIndex = new Pair<String,Double>(feature,infoGain);
                 scoredFeatures.add(featureIndex);
             }
         }

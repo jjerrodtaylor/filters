@@ -18,11 +18,12 @@ public class EntropyTest{
     @Test
     public void testEntropy(){
         FileHelper fileHelper = new FileHelper();
-        List<String> lines = fileHelper.readFileToMemory("/Users/jamaaltaylor/Documents/datos/humidity.csv");
-        Data freshData = fileHelper.parseCSVData(lines);
+        List<String[]> lines = fileHelper.readFileToMemory("/Users/jamaaltaylor/Documents/datos/humidity.csv");
+        Data freshData = new Data();
+        freshData.setData(lines);//.parseCSVData(lines);
 
         Entropy entropy = new Entropy();
-        Double result = entropy.entropy(new ArrayList(freshData.getData().get("PlayBall")));
+        Double result = entropy.entropy(freshData.dataColumn("PlayBall", DataOption.GET,true));
         assertEquals(.940,result,.006);
     }
 
@@ -30,13 +31,14 @@ public class EntropyTest{
     public void testInformationGain(){
 
         FileHelper fileHelper = new FileHelper();
-        List<String> lines = fileHelper.readFileToMemory("/Users/jamaaltaylor/Documents/datos/humidity.csv");
-        Data freshData = fileHelper.parseCSVData(lines);
+        List<String[]> lines = fileHelper.readFileToMemory("/Users/jamaaltaylor/Documents/datos/humidity.csv");
+        Data freshData = new Data();//fileHelper.parseCSVData(lines);
+        freshData.setData(lines);
 
         Entropy entropy = new Entropy();
-        Double result = entropy.informationGain(new ArrayList(freshData.getData().get("PlayBall")),new ArrayList(freshData.getData().get("Wind")));
+        Double result = entropy.informationGain(freshData.dataColumn("PlayBall", DataOption.GET,true), freshData.dataColumn("Wind", DataOption.GET,true));
         assertEquals(0.048,result,.005);
-        result = entropy.informationGain(new ArrayList(freshData.getData().get("PlayBall")),new ArrayList(freshData.getData().get("Outlook")));
+        result = entropy.informationGain(freshData.dataColumn("PlayBall",DataOption.GET,true),freshData.dataColumn("Outlook",DataOption.GET,true));
         assertEquals(0.246,result,.005);
     }
 
@@ -45,11 +47,12 @@ public class EntropyTest{
     public void testConditionalEntropy(){
 
         FileHelper fileHelper = new FileHelper();
-        List<String> lines = fileHelper.readFileToMemory("/Users/jamaaltaylor/Documents/datos/humidity.csv");
-        Data freshData = fileHelper.parseCSVData(lines);
+        List<String[]> lines = fileHelper.readFileToMemory("/Users/jamaaltaylor/Documents/datos/humidity.csv");
+        Data freshData = new Data();//fileHelper.parseCSVData(lines);
+        freshData.setData(lines);
 
         Entropy entropy = new Entropy();
-        Double result = entropy.conditionalEntropy(new ArrayList(freshData.getData().get("PlayBall")),new ArrayList(freshData.getData().get("Wind")));
+        Double result = entropy.conditionalEntropy(freshData.dataColumn("PlayBall",DataOption.GET,true), freshData.dataColumn("Wind",DataOption.GET,true));
         assertEquals(0.892,result,.006);
     }
 
@@ -57,9 +60,9 @@ public class EntropyTest{
     public void testigRank(){
 
         FileHelper fileHelper = new FileHelper();
-        List<String> lines = fileHelper.readFileToMemory("/Users/jamaaltaylor/Documents/datos/humidity.csv");
-        Data freshData = fileHelper.parseCSVData(lines);
-
+        List<String[]> lines = fileHelper.readFileToMemory("/Users/jamaaltaylor/Documents/datos/humidity.csv");
+        Data freshData = new Data();//fileHelper.parseCSVData(lines);
+        freshData.setData(lines);
         Entropy entropy = new Entropy();
         entropy.igRank(freshData,"PlayBall");
 

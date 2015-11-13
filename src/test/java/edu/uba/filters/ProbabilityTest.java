@@ -14,18 +14,19 @@ public class ProbabilityTest {
     @Test
     public void testNaiveBays(){
         FileHelper fileHelper = new FileHelper();
-        List<String> lines = fileHelper.readFileToMemory("/Users/jamaaltaylor/Documents/datos/humidity.csv");
-        Data freshData = fileHelper.parseCSVData(lines);
+        List<String[]> lines = fileHelper.readFileToMemory("/Users/jamaaltaylor/Documents/datos/humidity.csv");
+        Data freshData = new Data();
+        freshData.setData(lines);//.parseCSVData(lines);
 
-        List<String> predictLines = fileHelper.readFileToMemory("/Users/jamaaltaylor/Documents/datos/predict.csv");
-        Data predictData = fileHelper.parseCSVData(predictLines);
+        List<String[]> predictLines = fileHelper.readFileToMemory("/Users/jamaaltaylor/Documents/datos/predict.csv");
+        Data predictData = new Data();//fileHelper.parseCSVData(predictLines);
+        predictData.setData(predictLines);
+
         Entropy entropy = new Entropy();
         Probability probability = new Probability();
-        //probability.naiveBayesTrain(freshData,freshData.getData().get("PlayBall"));
-        predictData.removeColumn("Day");
-        freshData.removeColumn("Day");
-        probability.naiveBayes(freshData, new ArrayList(freshData.getData().get("PlayBall")), BayesOption.TRAIN);
-        probability.naiveBayes(predictData,new ArrayList(predictData.getData().get("PlayBall")),BayesOption.PREDICT);
+        List<String> targetClass = freshData.dataColumn("PlayBall",DataOption.GET,true);
+        probability.naiveBayes(freshData, targetClass, BayesOption.TRAIN,true);
+        probability.naiveBayes(predictData, predictData.dataColumn("PlayBall",DataOption.GET,true),BayesOption.PREDICT,true);
         assertEquals(2,probability.getPredictions().size());
 
     }

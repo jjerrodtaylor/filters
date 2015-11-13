@@ -63,7 +63,7 @@ public class DataTest {
     @Test
     public void testDiscreteize(){
         FileHelper fileHelper = new FileHelper();
-        List<String> lines = fileHelper.readFileToMemory("/Users/jamaaltaylor/Documents/datos/birthwt.txt");
+        List<String[]> lines = fileHelper.readFileToMemory("/Users/jamaaltaylor/Documents/datos/birthwt.txt");
         LinkedList<String> headersToChange = new LinkedList<String>();
         headersToChange.add("age");
         headersToChange.add("lwt");
