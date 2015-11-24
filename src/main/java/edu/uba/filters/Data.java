@@ -2,6 +2,7 @@ package edu.uba.filters;
 
 import com.google.common.collect.*;
 import org.apache.commons.math3.stat.*;
+import org.apache.commons.math3.util.Pair;
 
 import java.util.*;
 
@@ -16,7 +17,6 @@ public class Data {
         this.data = data;
     }
 
-
     private List<String[]> data;
 
     public Data(){
@@ -26,7 +26,6 @@ public class Data {
     public Data(List<String[]> data){
         this.data = data;
     }
-
 
     public List<String> dataColumn(String name, DataOption dataOption, Boolean header){
         List<String> column = new ArrayList<String>();
@@ -145,51 +144,56 @@ public class Data {
         return transformations;
     }
 
-    public Data discretize(List<String[]> data,List<String> headersToChange, int firstGroup, int lastGroup){
-        double[] doubList;
-        String[] transformations;
-        List<String> workingList;
-        Data datos = new Data();
-        List<String[]> discreteData = new ArrayList<String[]>();
+    public List<String> discretize(List<String> data, int firstGroup, int lastGroup){
 
-        String[] keys = data.get(0);//Util.convertToStringArray(data.keySet().toArray());
-        for(int i=0;i<keys.length;i++){
-            workingList = dataColumn(keys[i],DataOption.GET,true);
+        double[] toDouble = transformToDouble(data);
+        String[] transformations = linearTransform(toDouble,firstGroup,lastGroup);
+        List<String> transformedData = new ArrayList<String>();
 
-            if(headersToChange.size() > 0) {
-                String compare = headersToChange.get(0);//getFirst();
-                if(keys[i].equalsIgnoreCase(compare)){
-                    headersToChange.remove(0);//removeFirst();
-                    doubList = transformToDouble(dataColumn(keys[i],DataOption.GET,true));
-                    transformations = linearTransform(doubList,firstGroup, lastGroup);
-
-                    for(int j =0;j<workingList.size();j++){
-
-                        discreteData.get(i)[j] = transformations[j];
-                    }
-
-                }else{
-                    for(int j=0;j<workingList.size();j++) {
-                        discreteData.get(i)[j] = workingList.get(j);
-                    }
-                }
-
-            }else {
-
-
-                for (int j = 0; j < workingList.size(); j++) {
-                    discreteData.get(i)[j] = workingList.get(j);
-                }
-            }
+        for(int i=0;i<transformations.length;i++){
+            String[] insert = new String[1];
+            transformedData.add(transformations[i]);
         }
 
-        datos.setData(discreteData);
-        return datos;
+        return transformedData;
     }
 
-    public void removeColumn(String column){
+    public List<Pair<String,Double>> getPercentage(List<Pair<String,Double>> ranked,double percentageToGet){
 
+        if(percentageToGet > 1.0){
+            percentageToGet = percentageToGet/100.0;
+        }
+
+        double percentage = ranked.size() * percentageToGet;
+        int finalPercentage = (int) percentage + 1;
+        List<Pair<String,Double>> shortList = new ArrayList<Pair<String, Double>>();
+        for(int i=0;i<finalPercentage;i++){
+            shortList.add(ranked.remove(i));
+        }
+
+        return shortList;
     }
+
+    public List<String[]> createNewDataSet(Data data, List<Pair<String,Double>> rankedData){
+        List<String[]> originalDataSet = data.getData();
+        List<String[]> newDataSet = new ArrayList<String[]>();
+
+        for(int i=0;i<rankedData.size();i++){
+            String nameToGet = rankedData.get(i).getFirst();
+            for(int j=0;j<originalDataSet.size()-1;j++){
+                List<String> addThis = data.dataColumn(nameToGet,DataOption.GET,true);
+                String[] dataList = new String[rankedData.size()];
+                dataList[i] = addThis.get(j);
+                newDataSet.add(dataList);
+            }
+            int m=0;
+
+        }
+
+        return newDataSet;
+    }
+
+
 
 
 }

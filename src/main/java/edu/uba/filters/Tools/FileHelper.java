@@ -3,16 +3,19 @@ package edu.uba.filters.Tools;
 import java.io.*;
 import java.util.*;
 import com.opencsv.CSVReader;
-import edu.uba.filters.Data;
 import org.apache.commons.io.FileUtils;
-import com.google.common.collect.LinkedListMultimap;
-
+import java.util.regex.*;
 
 
 public class FileHelper {
 
-    private IOBufferedWriter  bw = null;
-    private IOBufferedReader br = null;
+    Pattern lastRaced = Pattern.compile("/([\\d|-].*?)\\s\\s+/");
+    Pattern pgm = Pattern.compile("/[\\d|-].*?\\s\\s+(\\d+)\\s\\s+/");
+    Pattern horseName = Pattern.compile("/[\\d|-].*?\\s\\s+\\d+\\s\\s+(.*?)\\d\\d/");
+    Pattern wgt = Pattern.compile("/[\\d|-].*?\\s\\s+\\d+\\s\\s+.*?(\\d\\d.*?)\\s\\s+/");
+    Pattern me = Pattern.compile("/[\\d|-].*?\\s\\s+\\d+\\s\\s+.*?(\\d\\d.*?)\\s\\s+([A-Z|-].*?)\\s\\s+/");
+    Pattern pp = Pattern.compile("/[\\d|-].*?\\s\\s+\\d+\\s\\s+.*?\\d\\d.*?\\s\\s+[A-Z|-].*?\\s\\s+(\\d+)\\s\\s+/");
+    Pattern odds = Pattern.compile("/.*\\s\\s+(\\d*\\.?\\d*\\*?)\\s\\s+.*$/");
 
 
     public FileHelper(){
@@ -48,23 +51,76 @@ public class FileHelper {
         return fileContents;
     }
 
-    /*public Data parseCSVData(List<String> data){
+    public List<String> readLines(String filepath){
 
-        LinkedListMultimap<String,String> transformed = LinkedListMultimap.create();
-        String[] headers = data.get(0).split(",");
-        String[] temp;
-        Data datos = new Data();
-        datos.setHeaders(headers);
+        List<String> fileContents = new LinkedList<String>();
+        File file = new File(filepath);
 
+        try{
+            fileContents = FileUtils.readLines(file,"UTF-8");
+        }catch (IOException e){
+            e.printStackTrace();
+        }
 
-        for(int i = 1;i<data.size();i++){
-            for(int j = 0;j<headers.length;j++){
-                temp = data.get(i).split(",");
-                transformed.put(headers[j],temp[j]);
+        return fileContents;
+
+    }
+
+    public List<String> readDirectory(String path){
+        File folder = new File(path);
+        File[] listOfFiles = folder.listFiles();
+        List<String> returnNames = new ArrayList<String>();
+
+        for(File f: listOfFiles){
+            if(f.isFile()){
+                returnNames.add(f.getName());
             }
         }
 
-        datos.setData(transformed);
-        return datos;
-    }*/
+        return returnNames;
+    }
+
+    public void  parseTextData(List<String> data){
+
+        for(String s:data){
+
+            Matcher lastRacedmatcher = lastRaced.matcher(s);
+            Matcher pgmMatcher = pgm.matcher(s);
+            Matcher horseNameMatcher = horseName.matcher(s);
+            Matcher wgtMatcher = wgt.matcher(s);
+            Matcher meMatcher = me.matcher(s);
+            Matcher ppMatcher = pp.matcher(s);
+            Matcher oddsMatcher = odds.matcher(s);
+
+            if(lastRacedmatcher.find()){
+
+            }
+
+            if(pgmMatcher.find()){
+
+            }
+
+            if(horseNameMatcher.find()){
+
+            }
+
+            if(wgtMatcher.find()){
+
+            }
+
+            if(meMatcher.find()){
+
+            }
+
+            if(ppMatcher.find()){
+
+            }
+
+            if(oddsMatcher.find()){
+
+            }
+
+
+        }
+    }
 }

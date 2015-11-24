@@ -26,9 +26,10 @@
           <version>2.4</version>
       </dependency>
       <dependency>
-          <groupId>joinery</groupId>
-          <artifactId>joinery-dataframe</artifactId>
-          <version>1.7</version>
+          <groupId>com.univocity</groupId>
+          <artifactId>univocity-parsers</artifactId>
+          <version>1.5.6</version>
+          <type>jar</type>
       </dependency>
       <dependency>
           <groupId>com.opencsv</groupId>
@@ -40,11 +41,6 @@
           <artifactId>commons-math3</artifactId>
           <version>3.2</version>
       </dependency>
-      <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-csv</artifactId>
-      <version>1.2</version>
-    </dependency>
       <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
