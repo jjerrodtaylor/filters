@@ -92,8 +92,9 @@ public class FileHelper {
             Matcher ppMatcher = pp.matcher(s);
             Matcher oddsMatcher = odds.matcher(s);
 
-            if(lastRacedmatcher.find()){
 
+            if(lastRacedmatcher.find()){
+                String test = lastRacedmatcher.group();
             }
 
             if(pgmMatcher.find()){

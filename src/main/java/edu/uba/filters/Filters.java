@@ -15,10 +15,10 @@ public class Filters {
         Data original = new Data();
         Entropy entropy = new Entropy();
         Probability probability = new Probability();
-        List<String[]> training = fileHelper.readFileToMemory("/Users/jamaaltaylor/Documents/datos/innocentive_training_short_list.csv");
-        List<String[]> testing = fileHelper.readFileToMemory("/Users/jamaaltaylor/Documents/datos/innocentive_testing.csv");
+        List<String[]> training = fileHelper.readFileToMemory("/Users/jamaaltaylor/Documents/datos/prudential_train.csv");
         data.setData(training);
-        List<String> targetSet = data.dataColumn("target_purchase",DataOption.GET,true);
+        List<String> targetSet = data.dataColumn("Product_Info_2",DataOption.GET,true);
+        Double testEntropy = entropy.entropy(targetSet);
         probability.naiveBayes(data,targetSet,BayesOption.TRAIN,true);
         /*sample.randomSampleReplacement(lines,60000);
         data.setData(sample.getRandomSample());
