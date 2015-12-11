@@ -16,10 +16,10 @@ public class ProbabilityTest {
         FileHelper fileHelper = new FileHelper();
         List<String[]> lines = fileHelper.readFileToMemory("/Users/jamaaltaylor/Documents/datos/humidity.csv");
         Data freshData = new Data();
-        freshData.setData(lines);//.parseCSVData(lines);
+        freshData.setData(lines);
 
         List<String[]> predictLines = fileHelper.readFileToMemory("/Users/jamaaltaylor/Documents/datos/predict.csv");
-        Data predictData = new Data();//fileHelper.parseCSVData(predictLines);
+        Data predictData = new Data();
         predictData.setData(predictLines);
 
         Entropy entropy = new Entropy();

@@ -1,11 +1,7 @@
 package edu.uba.filters;
 
 import edu.uba.filters.Tools.FileHelper;
-import org.junit.Before;
 import org.junit.Test;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.*;
@@ -66,5 +62,25 @@ public class EntropyTest{
         Entropy entropy = new Entropy();
         entropy.igRank(freshData,"PlayBall");
 
+    }
+
+    @Test
+    public void testSymmetricalUncertainty(){
+        FileHelper fileHelper = new FileHelper();
+        List<String[]> lines = fileHelper.readFileToMemory("/Users/jamaaltaylor/Documents/datos/humidity.csv");
+        Data freshData = new Data();//fileHelper.parseCSVData(lines);
+        freshData.setData(lines);
+        Entropy entropy = new Entropy();
+        entropy.symmetricalUncertainty(freshData.dataColumn("PlayBall", DataOption.GET, true), freshData.dataColumn("Wind", DataOption.GET, true));
+    }
+
+    @Test
+    public void testFCBF(){
+        FileHelper fileHelper = new FileHelper();
+        List<String[]> lines = fileHelper.readFileToMemory("/Users/jamaaltaylor/Documents/datos/humidity.csv");
+        Data freshData = new Data();//fileHelper.parseCSVData(lines);
+        freshData.setData(lines);
+        Entropy entropy = new Entropy();
+        entropy.fcbf(freshData,"PlayBall",0.8);
     }
 }
