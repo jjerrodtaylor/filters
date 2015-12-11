@@ -137,7 +137,7 @@ public class Entropy extends Probability {
         return scoredFeatures;
     }
 
-    /*public double specifiedConditionalEntropy(List<String> interestedSet,
+    public double specifiedConditionalEntropy(List<String> interestedSet,
                                               List<String> reducingSet,
                                               String interestedClass, String reducingClass){
 
@@ -157,9 +157,9 @@ public class Entropy extends Probability {
         entropy = - conditionalProb * log(conditionalProb,2);
 
         return entropy;
-    }*/
+    }
 
-    /*public double symmetricalUncertainty(List<String> interestedSet, List<String> reducingSet){
+    public double symmetricalUncertainty(List<String> interestedSet, List<String> reducingSet){
         double infoGain = informationGain(interestedSet,reducingSet);
         double intSet = entropy(interestedSet);
         double redSet = entropy(reducingSet);
@@ -169,19 +169,18 @@ public class Entropy extends Probability {
 
     public List<Pair<String,Double>> fcbf(Data data,String targetClass, double threshold){
 
-        int numOfKeys = data.getData().keySet().toArray().length;
+        int numOfKeys = data.getNumOfKeys();
         List<Pair<String,Double>> scoredFeatures = new LinkedList<Pair<String, Double>>();
         List<Pair<String,Double>> suAboveThreshold = new LinkedList<Pair<String, Double>>();
         List<Pair<String,Double>> predominantFeatures = new LinkedList<Pair<String, Double>>();
-        String[] keys = Util.convertToStringArray(data.getData().keySet().toArray());
-
+        String[] keys = data.getKeys();
         double symUnc = 0.0;
 
         //assign a score to the correlations
         for(int i=0;i<numOfKeys;i++){
-            symUnc = symmetricalUncertainty(data.getData().get(targetClass), data.getData().get(keys[i]));
+            symUnc = symmetricalUncertainty(data.dataColumn(targetClass,DataOption.GET,true), data.dataColumn(keys[i],DataOption.GET,true));
             if(symUnc > threshold){
-                Object feature = data.getData().keySet().toArray()[i];
+                Object feature = data.getKey(i);
                 Pair<String,Double> featureIndex = new Pair<String,Double>(Util.convertToString(feature),symUnc);
                 scoredFeatures.add(featureIndex);
             }
@@ -202,8 +201,9 @@ public class Entropy extends Probability {
         for(int i = 0;i<suAboveThreshold.size();i++){
             for(int j = 0;j<predominantFeatures.size();j++){
                 Pair<String,Double> q = suAboveThreshold.get(i);
-                pqComparison = symmetricalUncertainty(data.getData().get(p.getKey()),data.getData().get(q.getKey()));
-                qcComparison = symmetricalUncertainty(data.getData().get(targetClass),data.getData().get(q.getKey()));
+
+                pqComparison = symmetricalUncertainty(data.dataColumn(p.getKey(),DataOption.GET,true), data.dataColumn(q.getKey(),DataOption.GET,true));
+                qcComparison = symmetricalUncertainty(data.dataColumn(targetClass,DataOption.GET,true),data.dataColumn(q.getKey(),DataOption.GET,true));
 
                 if(pqComparison >= qcComparison){
                     suAboveThreshold.remove(i);
@@ -212,9 +212,8 @@ public class Entropy extends Probability {
                     suAboveThreshold.remove(i);
                 }
             }
-
         }
 
         return predominantFeatures;
-    }*/
+    }
 }
