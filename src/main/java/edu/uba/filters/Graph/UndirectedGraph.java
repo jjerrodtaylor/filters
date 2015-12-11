@@ -24,11 +24,11 @@ public class UndirectedGraph implements Graph {
     }
 
     public List<Node> getNeighbors(String vertex){
-        return graph.get(vertex).adjacencyList;
+        return graph.get(vertex).getAdjacencyList();
     }
 
     public int degree(String vertex){
-        return graph.get(vertex).adjacencyList.size();
+        return graph.get(vertex).getAdjacencyList().size();
     }
 
     public boolean hasVertex(String vertex){
@@ -36,8 +36,8 @@ public class UndirectedGraph implements Graph {
     }
 
     public boolean hasEdge(String here, String there){
-        Set<Node> nHere = new HashSet<Node>(graph.get(here).adjacencyList);
-        Set<Node> nThere = new HashSet<Node>(graph.get(there).adjacencyList);
+        Set<String> nHere = new HashSet<String>(graph.get(here).getAdjacencyListLabels());
+        Set<String> nThere = new HashSet<String>(graph.get(there).getAdjacencyListLabels());
 
         boolean hereConThere = nHere.contains(there);
         boolean thereConHere = nThere.contains(here);
