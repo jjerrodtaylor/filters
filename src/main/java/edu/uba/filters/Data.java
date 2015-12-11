@@ -117,6 +117,18 @@ public class Data {
         return newData;
     }
 
+    /*
+    * https://en.wikipedia.org/wiki/Freedman%E2%80%93Diaconis_rule
+    * */
+    public double calculateBinSize(double[] data){
+        double firstQuartile = StatUtils.percentile(data,.25);
+        double thirdQuartile = StatUtils.percentile(data,.75);
+        double iqr = thirdQuartile - firstQuartile;
+        double binSize = 2*iqr*(Math.pow(data.length,.33));
+
+        return binSize;
+    }
+
     public String[] linearTransform(double[] data, int firstGroup, int lastGroup){
         double doubMin = StatUtils.min(data);
         double doubMax = StatUtils.max(data);
