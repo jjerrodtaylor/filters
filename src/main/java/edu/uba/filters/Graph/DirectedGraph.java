@@ -16,8 +16,8 @@ public class DirectedGraph implements Graph {
     public void addEdge(String here, String there){
         Node nHere = graph.get(here);
         Node nThere = graph.get(there);
-        nThere.addNeighbour(nHere);
-        graph.put(there,nThere);
+        nHere.addNeighbour(nThere);
+        graph.put(here,nHere);
     }
 
     public List<Node> getNeighbors(String vertex){
@@ -36,5 +36,16 @@ public class DirectedGraph implements Graph {
         Set<String> nThere = new HashSet<String>(graph.get(there).getAdjacencyListLabels());
         boolean thereConHere = nThere.contains(here);
         return (thereConHere);
+    }
+
+    public Node getVertex(String label){
+
+        Node vertex = null;
+
+        if(hasVertex(label) == true){
+            vertex = graph.get(label);
+        }
+
+        return vertex;
     }
 }

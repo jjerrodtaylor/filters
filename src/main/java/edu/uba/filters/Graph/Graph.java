@@ -17,4 +17,6 @@ public interface Graph {
 
     public boolean hasEdge(String here, String there);
 
+    public Node getVertex(String label);
+
 }

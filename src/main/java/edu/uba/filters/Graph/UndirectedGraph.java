@@ -44,4 +44,14 @@ public class UndirectedGraph implements Graph {
 
         return (hereConThere & thereConHere);
     }
+
+    public Node getVertex(String label){
+        Node vertex = null;
+
+        if(hasVertex(label) == true){
+            vertex = graph.get(label);
+        }
+
+        return vertex;
+    }
 }
