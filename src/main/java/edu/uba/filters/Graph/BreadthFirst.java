@@ -11,10 +11,14 @@ public class BreadthFirst {
     private Queue<Node> queue = new LinkedList<Node>();
     private Set<String> visited = new HashSet<String>();
 
-    BreadthFirst(Graph graph,String startingVertex){
+    public BreadthFirst(Graph graph,String startingVertex){
         this.graph = graph;
         this.queue.add(graph.getVertex(startingVertex));
         this.visited.add(startingVertex);
+    }
+
+    public BreadthFirst(Graph graph){
+        this.graph = graph;
     }
 
     public boolean hasNext(){
