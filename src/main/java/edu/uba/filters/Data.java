@@ -129,6 +129,18 @@ public class Data {
         return binSize;
     }
 
+    public int numberOfBins(double[] data){
+
+        double min = StatUtils.min(data);
+        double max = StatUtils.max(data);
+        double distance = max-min;
+        double binSize = calculateBinSize(data);
+        double numOfBins = distance/binSize;
+
+        return (int) numOfBins + 1;
+
+    }
+
     public String[] linearTransform(double[] data, int firstGroup, int lastGroup){
         double doubMin = StatUtils.min(data);
         double doubMax = StatUtils.max(data);
