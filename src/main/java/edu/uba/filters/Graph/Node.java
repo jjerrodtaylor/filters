@@ -1,6 +1,6 @@
 package edu.uba.filters.Graph;
 
-import edu.uba.filters.Frequency;
+import edu.uba.filters.Primatives.Frequency;
 
 import java.util.*;
 
