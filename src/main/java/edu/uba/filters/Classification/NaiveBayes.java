@@ -1,10 +1,9 @@
-package edu.uba.filters.Tools;
+package edu.uba.filters.Classification;
 
-import edu.uba.filters.Data;
-import edu.uba.filters.Frequency;
+import edu.uba.filters.Primatives.Frequency;
 import edu.uba.filters.Graph.Graph;
 import edu.uba.filters.Graph.UndirectedGraph;
-import edu.uba.filters.Probability;
+import edu.uba.filters.Primatives.Probability;
 
 import java.util.List;
 
