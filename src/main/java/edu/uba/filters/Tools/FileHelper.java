@@ -9,15 +9,6 @@ import java.util.regex.*;
 
 public class FileHelper {
 
-    Pattern lastRaced = Pattern.compile("/([\\d|-].*?)\\s\\s+/");
-    Pattern pgm = Pattern.compile("/[\\d|-].*?\\s\\s+(\\d+)\\s\\s+/");
-    Pattern horseName = Pattern.compile("/[\\d|-].*?\\s\\s+\\d+\\s\\s+(.*?)\\d\\d/");
-    Pattern wgt = Pattern.compile("/[\\d|-].*?\\s\\s+\\d+\\s\\s+.*?(\\d\\d.*?)\\s\\s+/");
-    Pattern me = Pattern.compile("/[\\d|-].*?\\s\\s+\\d+\\s\\s+.*?(\\d\\d.*?)\\s\\s+([A-Z|-].*?)\\s\\s+/");
-    Pattern pp = Pattern.compile("/[\\d|-].*?\\s\\s+\\d+\\s\\s+.*?\\d\\d.*?\\s\\s+[A-Z|-].*?\\s\\s+(\\d+)\\s\\s+/");
-    Pattern odds = Pattern.compile("/.*\\s\\s+(\\d*\\.?\\d*\\*?)\\s\\s+.*$/");
-
-
     public FileHelper(){
         super();
     }
@@ -78,50 +69,5 @@ public class FileHelper {
         }
 
         return returnNames;
-    }
-
-    public void  parseTextData(List<String> data){
-
-        for(String s:data){
-
-            Matcher lastRacedmatcher = lastRaced.matcher(s);
-            Matcher pgmMatcher = pgm.matcher(s);
-            Matcher horseNameMatcher = horseName.matcher(s);
-            Matcher wgtMatcher = wgt.matcher(s);
-            Matcher meMatcher = me.matcher(s);
-            Matcher ppMatcher = pp.matcher(s);
-            Matcher oddsMatcher = odds.matcher(s);
-
-
-            if(lastRacedmatcher.find()){
-                String test = lastRacedmatcher.group();
-            }
-
-            if(pgmMatcher.find()){
-
-            }
-
-            if(horseNameMatcher.find()){
-
-            }
-
-            if(wgtMatcher.find()){
-
-            }
-
-            if(meMatcher.find()){
-
-            }
-
-            if(ppMatcher.find()){
-
-            }
-
-            if(oddsMatcher.find()){
-
-            }
-
-
-        }
     }
 }
