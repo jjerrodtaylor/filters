@@ -1,14 +1,12 @@
 package edu.uba.filters;
 
 
-import org.junit.Before;
+import edu.uba.filters.Primatives.Frequency;
 import org.junit.Test;
-import java.util.ArrayList;
+
 import java.util.Arrays;
 import java.util.List;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.*;
-import edu.uba.filters.Entropy;
 
 public class FrequencyTest {
 

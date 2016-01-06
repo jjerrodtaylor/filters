@@ -1,13 +1,13 @@
 package edu.uba.filters;
 
+import edu.uba.filters.Primatives.Probability;
 import edu.uba.filters.Tools.FileHelper;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.*;
-import edu.uba.filters.Entropy;
+
+import edu.uba.filters.Primatives.Entropy;
 
 public class ProbabilityTest {
 

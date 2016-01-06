@@ -1,29 +1,45 @@
 package edu.uba.filters;
 
+import edu.uba.filters.Primatives.EntropyCalculator;
 import edu.uba.filters.Tools.FileHelper;
 import org.junit.Test;
 import java.util.List;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.*;
-import edu.uba.filters.Entropy;
+
+import edu.uba.filters.Primatives.Entropy;
 
 
 public class EntropyTest{
 
 
     @Test
-    public void testEntropy(){
+    public void testEntropyCalculator(){
         FileHelper fileHelper = new FileHelper();
         List<String[]> lines = fileHelper.readFileToMemory("/Users/jamaaltaylor/Documents/datos/humidity.csv");
         Data freshData = new Data();
         freshData.setData(lines);//.parseCSVData(lines);
+
+        EntropyCalculator calculator = new EntropyCalculator();
+
+        assertEquals(0, calculator.getData().size());
+        calculator.addData("1");
+        assertEquals(1, calculator.getData().size());
+        assertEquals(false,calculator.isRunning());
+    }
+
+    @Test
+    public void testEntropy(){
+        FileHelper fileHelper = new FileHelper();
+        List<String[]> lines = fileHelper.readFileToMemory("/Users/jamaaltaylor/Documents/datos/humidity.csv");
+        Data freshData = new Data();
+        freshData.setData(lines);
 
         Entropy entropy = new Entropy();
         Double result = entropy.entropy(freshData.dataColumn("PlayBall", DataOption.GET,true));
         assertEquals(.940,result,.006);
     }
 
-    @Test
+    /*@Test
     public void testInformationGain(){
 
         FileHelper fileHelper = new FileHelper();
@@ -82,5 +98,5 @@ public class EntropyTest{
         freshData.setData(lines);
         Entropy entropy = new Entropy();
         entropy.fcbf(freshData,"PlayBall",0.8);
-    }
+    } */
 }

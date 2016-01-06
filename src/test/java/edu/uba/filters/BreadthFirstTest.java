@@ -1,6 +1,6 @@
 package edu.uba.filters;
 
-import edu.uba.filters.Graph.BreadthFirst;
+import edu.uba.filters.Search.BreadthFirst;
 import edu.uba.filters.Graph.Graph;
 import edu.uba.filters.Graph.UndirectedGraph;
 import org.junit.Test;
