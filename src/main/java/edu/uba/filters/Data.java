@@ -120,7 +120,7 @@ public class Data {
     /*
     * https://en.wikipedia.org/wiki/Freedman%E2%80%93Diaconis_rule
     * */
-    public double calculateBinSize(double[] data){
+    private double calculateBinSize(double[] data){
         double firstQuartile = StatUtils.percentile(data,.25);
         double thirdQuartile = StatUtils.percentile(data,.75);
         double iqr = thirdQuartile - firstQuartile;
