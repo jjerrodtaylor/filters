@@ -1,11 +1,15 @@
-package edu.uba.filters.Graph;
+package edu.uba.filters.Search;
+
+import edu.uba.filters.Graph.Graph;
+import edu.uba.filters.Graph.Node;
+import edu.uba.filters.Search.Search;
 
 import java.util.*;
 
 /**
  * Created by jamaaltaylor on 12/15/15.
  */
-public class BreadthFirst {
+public class BreadthFirst implements Search {
 
     private Graph graph;
     private Queue<Node> queue = new LinkedList<Node>();

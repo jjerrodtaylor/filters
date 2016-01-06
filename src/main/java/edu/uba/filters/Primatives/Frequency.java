@@ -1,4 +1,4 @@
-package edu.uba.filters;
+package edu.uba.filters.Primatives;
 
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;

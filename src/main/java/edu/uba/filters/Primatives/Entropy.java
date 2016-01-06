@@ -1,7 +1,8 @@
-package edu.uba.filters;
+package edu.uba.filters.Primatives;
 
 import java.util.*;
-import edu.uba.filters.Frequency;
+
+import edu.uba.filters.*;
 import org.apache.commons.math3.util.Pair;
 
 public class Entropy extends Probability {
@@ -11,31 +12,60 @@ public class Entropy extends Probability {
         super();
     }
 
-    private double log(double num, int base){
-       return Math.log(num)/Math.log(base);
-    }
 
     public double entropy(List<String> data){
 
-        double entropy = 0.0;
-        double prob = 0.0;
+        double entropy = 1.0;
+        List<EntropyCalculator> calculators = new ArrayList<>();
+        int numProcessors = Runtime.getRuntime().availableProcessors();
+        double prob = 1/numProcessors;
 
-        if(this.iFrequency.getKeys().length==0){
-            this.setInterestedFrequency(data);
+        for(int i=0;i<numProcessors;i++){
+            calculators.add(new EntropyCalculator());
         }
 
+        int j = 0;
 
-        String[] keys = iFrequency.getKeys();
+        for(int i=0;i< data.size();i++){
+            String addThis = data.get(i);
+            calculators.get(j).addData(addThis);
 
-        for(int i=0;i<keys.length;i++){
-
-            prob = iFrequency.getPct(keys[i]);
-            entropy = entropy - prob * log(prob,2);
+            if(j == calculators.size() -1){
+                j = 0;
+            }else{
+                j++;
+            }
         }
 
-        iFrequency.clear();
+        EntropyCalculator additive = new EntropyCalculator();
+        for(int i=0;i<numProcessors;i++){
+            double percentage = (double) calculators.get(i).getData().size()/(double) data.size();
+            String asString = String.valueOf(percentage);
+            additive.addData(asString);
+        }
+        calculators.add(additive);
+
+        for(int i=0; i<calculators.size(); i++){
+            calculators.get(i).run();
+        }
+
+        while(calculators.get(0).isRunning()){
+            try{
+                Thread.sleep(100);
+            }catch (InterruptedException e){
+                e.printStackTrace();
+            }
+        }
+
+        //the last calculator has the entropy calculation of the distributions that is needed
+        entropy = calculators.get(calculators.size()-1).getResult();
+        for(int i=0;i<calculators.size()-1;i++){
+            entropy = entropy -  prob * calculators.get(i).getResult();
+        }
+
         return entropy;
     }
+
 
     private double reducedEntropy(List<Pair<String,String>> data){
 
@@ -118,7 +148,7 @@ public class Entropy extends Probability {
         //assign a score to the correlations
         for(int i=0;i<numOfKeys;i++){
             if(!targetClass.equalsIgnoreCase(keys[i])){
-                List<String> interestedSet = data.dataColumn(keys[i],DataOption.GET,true);// new ArrayList(data.getData().get(keys[i]));
+                List<String> interestedSet = data.dataColumn(keys[i], DataOption.GET,true);// new ArrayList(data.getData().get(keys[i]));
                 List<String> targetSet = data.dataColumn(targetClass,DataOption.GET,true);// new ArrayList(data.getData().get(targetClass));
                 infoGain = informationGain(targetSet, interestedSet);
                 String feature = data.getKey(i);
@@ -166,6 +196,7 @@ public class Entropy extends Probability {
         double symUnc = 2 * ( infoGain/ (intSet+redSet) );
         return symUnc;
     }
+
 
     public List<Pair<String,Double>> fcbf(Data data,String targetClass, double threshold){
 

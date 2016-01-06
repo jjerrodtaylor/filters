@@ -1,7 +1,12 @@
-package edu.uba.filters;
+package edu.uba.filters.Primatives;
 
 import java.util.*;
 
+import edu.uba.filters.BayesOption;
+import edu.uba.filters.Data;
+import edu.uba.filters.DataOption;
+import edu.uba.filters.Primatives.Frequency;
+import edu.uba.filters.Util;
 import org.apache.commons.math3.util.Pair;
 
 
@@ -12,6 +17,10 @@ public class Probability {
     private String[] targetClassKeys;
     private HashMap<String,Double> priors = new HashMap<String, Double>();
     private LinkedList<Pair<String,Double>> predictions = new LinkedList<Pair<String,Double>>();
+
+    public double log(double num, int base){
+        return Math.log(num)/Math.log(base);
+    }
 
     public void setInterestedFrequency(List<String> interestedFrequency){
         for(String s: interestedFrequency){
@@ -95,7 +104,7 @@ public class Probability {
             for(int j=0;j<numOfClasses;j++){
 
                 String reducingKey = Util.convertToString(keyNames[j]);
-                List<String> reducingClass = data.dataColumn(reducingKey,DataOption.GET,true);// new ArrayList(data.getData().get(reducingKey));
+                List<String> reducingClass = data.dataColumn(reducingKey, DataOption.GET,true);// new ArrayList(data.getData().get(reducingKey));
                 this.setReducingFrequency(reducingClass);
                 Object[] reducingClassKeys = rFrequency.getKeys();
                 rClass = Util.convertToStringArray(reducingClassKeys);
